@@ -32,6 +32,8 @@ async def create_user(user: schemas.UserCreate, db=Depends(get_db)):
 
 
 
+
+
 @router.get("/{id}", response_model=schemas.UserOut)
 async def get_user(id: int, db=Depends(get_db)):
     db.execute("""SELECT id, email, phone_number, created_at FROM users WHERE id = %s""", (id,))

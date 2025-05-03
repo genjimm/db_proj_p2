@@ -18,7 +18,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-my_posts = []
 
 app.include_router(user.router)
 
