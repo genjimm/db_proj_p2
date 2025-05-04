@@ -4,7 +4,7 @@ from .routers import user, auth
 from pydantic import BaseModel
 from .database import get_db  
 from fastapi.middleware.cors import CORSMiddleware
-
+from .routers import seminars, exhibitions
 
 app = FastAPI()
 
@@ -23,6 +23,9 @@ app.include_router(user.router)
 
 app.include_router(auth.router)
 
+app.include_router(seminars.router)
+
+app.include_router(exhibitions.router)
 
 @app.get('/')
 async def root():
