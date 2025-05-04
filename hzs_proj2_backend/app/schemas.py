@@ -3,26 +3,29 @@ from pydantic import BaseModel, EmailStr, Field, conint
 from typing import Optional, Literal
 from datetime import datetime
 # Schema/Pydantic Models define the structure of a request & response
-# This ensure that when a user wants to create a post, the request will
+# This ensure that when a Customer wants to create a post, the request will
 #  only go through if it has a valid field in the body"
 
 
-
-class UserCreate(BaseModel):
+class CustomerBase(BaseModel):
+    l_name: str
+    f_name: str
+    phone: Optional[str] = Field(None, pattern=r"^\+?[1-9]\d{1,14}$") 
     email: EmailStr
+    id_type: str
+    id_num: str
+    
+class CustomerCreate(CustomerBase):
     password: str
-    phone_number: Optional[str] = Field(None, pattern=r"^\+?[1-9]\d{1,14}$") 
+    
 
-class UserOut(BaseModel):
-    id: int
-    email: str
-    phone_number: Optional[str]
-    created_at: datetime
+class CustomerOut(CustomerBase):
+    customer_id: int
 
     class Config:
         orm_mode = True
 
-class UserLogin(BaseModel):
+class CustomerLogin(BaseModel):
     email: EmailStr
     password: str
 
@@ -57,7 +60,28 @@ class BookCopyOut(BaseModel):
     copy_id: int
     book_id: int
     status: str
-    
+
+
+class RentalCreate(BaseModel):
+    borrow_date: datetime
+    expected_return_date: datetime
+    customer_id: int
+    copy_id: int
+
+class RentalReturn(BaseModel):
+    actual_return_date: datetime
+
+class RentalOut(BaseModel):
+    rental_id: int
+    rental_status: str
+    borrow_date: datetime
+    expected_return_date: datetime
+    actual_return_date: Optional[datetime]
+    customer_id: int
+    copy_id: int
+
+    class Config:
+        orm_mode = True
 
 
 

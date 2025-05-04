@@ -11,7 +11,7 @@ router = APIRouter(tags=['Authentication'])
 @router.post('/login', response_model=schemas.Token, response_class=JSONResponse)
 def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db=Depends(database.get_db)):
     # Query the user from the database
-    db.execute("""SELECT * FROM users WHERE email = %s""", (user_credentials.username,))
+    db.execute("""SELECT * FROM hzs_customer WHERE email = %s""", (user_credentials.username,))
     user = db.fetchone()
 
     if not user:
@@ -27,8 +27,10 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db=Depends(da
             detail="Invalid Credentials"
         )
 
+    customer_id = int(user['customer_id'])
+
     # Create an access token
-    access_token = oauth2.create_access_token(data={"user_id": user['id']})
+    access_token = oauth2.create_access_token(data={"user_id": customer_id})
 
     return {"access_token": access_token, "token_type": "bearer"}
 
