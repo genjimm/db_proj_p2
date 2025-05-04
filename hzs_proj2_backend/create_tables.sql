@@ -326,7 +326,7 @@ COMMENT ON COLUMN HZS_ROOM_RESERVATION.RESERVATION_ID IS 'This is the unique ID 
 COMMENT ON COLUMN HZS_ROOM_RESERVATION.TOPIC_DESCRIPTION IS 'A brief description of the study topic for the reservation.' 
 ;
 
-COMMENT ON COLUMN HZS_ROOM_RESERVATION."DATE" IS 'The date on which the study room is reserved.' 
+COMMENT ON COLUMN HZS_ROOM_RESERVATION.RESERVE_DATE IS 'The date on which the study room is reserved.' 
 ;
 
 COMMENT ON COLUMN HZS_ROOM_RESERVATION.START_TIME IS 'The start time of the study room reservation.' 
