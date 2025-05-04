@@ -1,9 +1,6 @@
 from datetime import datetime
 from pydantic import BaseModel, EmailStr, Field, conint
-
-
 from typing import Optional, Literal
-
 from datetime import datetime
 # Schema/Pydantic Models define the structure of a request & response
 # This ensure that when a Customer wants to create a post, the request will
@@ -40,31 +37,6 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     id: Optional[int] = None
 
-
-
-class EventBase(BaseModel):
-    e_name: str               = Field(..., description="事件名称")
-    topic:  str               = Field(..., description="主题")
-    start_datetime: datetime  = Field(..., description="开始时间")
-    stop_datetime:  datetime  = Field(..., description="结束时间")
-    
-class EventOut(EventBase):
-    event_id:   int
-    event_type: Literal["Exhibition","Seminar"]
-    created_at: datetime
-    class Config:
-        orm_mode = True
-
-class ExhibitionCreate(EventBase):
-    expense: float = Field(..., ge=0, description="展览费用")
-
-class ExhibitionOut(ExhibitionCreate):
-    expense: float
-
-
-
-class SeminarCreate(EventBase):
-    descrip: str   = Field(..., description="研讨会说明")
 
 class BookBase(BaseModel):
     b_name: str = Field(..., min_length=1, max_length=50)
@@ -112,8 +84,9 @@ class RentalOut(BaseModel):
         orm_mode = True
 
 
-class SeminarOut(SeminarCreate):
-    descrip: str
+
+
+
 
 
 
