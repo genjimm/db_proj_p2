@@ -22,7 +22,7 @@ def create_access_token(data: dict):
 def verify_access_token(token: str, credentials_exception):
     try:
         payload = jwt.decode(token, SECRET_KEY, [ALGORITHM])
-        id: int = payload.get("user_id")
+        id: int = payload.get("customer_id")
         if id is None:
             raise credentials_exception
         token_data = schemas.TokenData(id=id)  # Validate token data using Pydantic
@@ -42,7 +42,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db=Depends(database.ge
     token_data = verify_access_token(token, credentials_exception)
 
     # Query the user from the database
-    db.execute("""SELECT * FROM users WHERE id = %s""", (token_data.id,))
+    db.execute("""SELECT * FROM hzs_customer WHERE id = %s""", (token_data.id,))
     user = db.fetchone()
 
     if not user:
