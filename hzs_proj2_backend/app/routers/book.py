@@ -62,6 +62,7 @@ async def add_book(book: schemas.BookCreate, db=Depends(database.get_db)):
             detail="An error occurred while adding the book."
         )
 
+    # 返回新增图书相关信息
     return added_book
 
 @router.get("/{book_id}", response_model=schemas.BookOut)
