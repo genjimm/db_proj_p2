@@ -1,6 +1,5 @@
-from typing import Optional, List
-from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
-from .. import schemas, utils, oauth2
+from fastapi import status, HTTPException, Depends, APIRouter
+from .. import schemas, utils
 from ..database import get_db
 
 router = APIRouter(

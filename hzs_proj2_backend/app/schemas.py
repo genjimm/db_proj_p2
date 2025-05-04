@@ -1,6 +1,6 @@
 from datetime import datetime
 from pydantic import BaseModel, EmailStr, Field, conint
-from typing import Optional
+from typing import Optional, Literal
 from datetime import datetime
 # Schema/Pydantic Models define the structure of a request & response
 # This ensure that when a user wants to create a post, the request will
@@ -33,6 +33,33 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     id: Optional[int] = None
+
+
+class BookBase(BaseModel):
+    b_name: str = Field(..., min_length=1, max_length=50)
+    topic: Optional[str] = Field(None, max_length=20)
+
+class BookOut(BookBase):
+    book_id: int
+    class Config:
+        orm_mode = True
+
+class BookCreate(BookBase):
+    pass
+
+
+
+class BookCopyCreate(BaseModel):
+    status: Literal["AVAILABLE", "UNAVAILABLE"] 
+
+
+class BookCopyOut(BaseModel):
+    copy_id: int
+    book_id: int
+    status: str
+    
+
+
 
 
 
