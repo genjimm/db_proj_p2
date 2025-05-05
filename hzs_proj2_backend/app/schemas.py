@@ -84,7 +84,6 @@ class RentalOut(BaseModel):
         orm_mode = True
 
 
-<<<<<<< HEAD
 class EventBase(BaseModel):
     e_name: str               = Field(..., description="事件名称")
     topic:  str               = Field(..., description="主题")
@@ -103,7 +102,8 @@ class ExhibitionCreate(EventBase):
 
 class ExhibitionOut(ExhibitionCreate):
     expense: float
-=======
+
+    
 class AuthorBase(BaseModel):
     f_name: str
     l_name: str
@@ -122,7 +122,6 @@ class AuthorOut(AuthorBase):
     class Config:
         orm_mode = True
 
->>>>>>> origin/master
 
 
 
