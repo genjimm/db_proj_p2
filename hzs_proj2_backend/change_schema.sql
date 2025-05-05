@@ -1,22 +1,26 @@
--- bookid◊‘º”
+-- bookidÔøΩ‘ºÔøΩ
 CREATE SEQUENCE hzs_book_id_seq START WITH 1 INCREMENT BY 1;
 ALTER TABLE hzs_book ALTER COLUMN book_id SET DEFAULT nextval('hzs_book_id_seq');
 
--- book_copy copy_id◊‘º”
+-- book_copy copy_idÔøΩ‘ºÔøΩ
 CREATE SEQUENCE hzs_book_copy_id_seq START WITH 1 INCREMENT BY 1;
 ALTER TABLE hzs_book_copy ALTER COLUMN copy_id SET DEFAULT nextval('hzs_book_copy_id_seq');
 
--- rental_id◊‘º”
+-- rental_idÔøΩ‘ºÔøΩ
 CREATE SEQUENCE hzs_rental_id_seq START WITH 1 INCREMENT BY 1;
 ALTER TABLE hzs_rental ALTER COLUMN rental_id SET DEFAULT nextval('hzs_rental_id_seq');
 
 
--- customer_id◊‘º”
+-- customer_idÔøΩ‘ºÔøΩ
 CREATE SEQUENCE hzs_customer_id_seq START WITH 1 INCREMENT BY 1;
 ALTER TABLE hzs_customer ALTER COLUMN customer_id SET DEFAULT nextval('hzs_customer_id_seq');
 
 
--- º”»Îconstraints
+
+-- sponsor_idÔøΩ‘ºÔøΩ
+CREATE SEQUENCE hzs_sponsor_id_seq START WITH 1 INCREMENT BY 1;
+ALTER TABLE hzs_sponsor ALTER COLUMN sponsor_id SET DEFAULT nextval('hzs_sponsor_id_seq');
+
 
 ALTER TABLE HZS_CUSTOMER
 ADD CONSTRAINT CK_CUSTOMER_ID_TYPE
@@ -27,6 +31,19 @@ CHECK (ID_TYPE IN ('Passport', 'SSN', 'Driver_License'));
 ALTER TABLE HZS_SPONSOR
 ADD CONSTRAINT CK_SPONSOR_TYPE
 CHECK (SPONSOR_TYPE IN ('INDIVIDUAL', 'ORGANIZATION'));
+
+ALTER TABLE hzs_sponsor
+  DROP CONSTRAINT IF EXISTS ck_sponsor_type;
+
+-- 2. ÊåâÂçïÂ≠óÁ¨¶ ‚ÄúI‚Äù„ÄÅ‚ÄúO‚Äù ÈáçÂª∫Á∫¶Êùü
+ALTER TABLE hzs_sponsor
+  ADD CONSTRAINT ck_sponsor_type
+    CHECK (sponsor_type IN ('I', 'O'));
+
+ALTER TABLE hzs_sponsor
+  ADD COLUMN created_at TIMESTAMP WITH TIME ZONE
+    NOT NULL DEFAULT now();
+
 
 ALTER TABLE HZS_RENTAL
 ADD CONSTRAINT CK_RENTAL_DATES

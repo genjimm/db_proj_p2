@@ -1,6 +1,6 @@
 from datetime import datetime
 from pydantic import BaseModel, EmailStr, Field, conint
-from typing import Optional, Literal
+from typing import Annotated, Optional, Literal
 from datetime import datetime
 # Schema/Pydantic Models define the structure of a request & response
 # This ensure that when a Customer wants to create a post, the request will
@@ -84,9 +84,89 @@ class RentalOut(BaseModel):
         orm_mode = True
 
 
+class EventBase(BaseModel):
+    e_name: str               = Field(..., description="事件名称")
+    topic:  str               = Field(..., description="主题")
+    start_datetime: datetime  = Field(..., description="开始时间")
+    stop_datetime:  datetime  = Field(..., description="结束时间")
+    
+class EventOut(EventBase):
+    event_id:   int
+    event_type: Literal["Exhibition","Seminar"]
+    created_at: datetime
+    class Config:
+        orm_mode = True
+
+class ExhibitionCreate(EventBase):
+    expense: float = Field(..., ge=0, description="展览费用")
+
+class ExhibitionOut(ExhibitionCreate):
+    expense: float
 
 
 
+class SeminarCreate(EventBase):
+    descrip: str   = Field(..., description="研讨会说明")
+
+class SeminarOut(SeminarCreate):
+    descrip: str
 
 
+class SponsorOutBase(BaseModel):
+    sponsor_id: int
+    sponsor_type: Literal["O", "I"]
+    created_at: Optional[datetime]  = None
+    model_config = {"from_attributes": True}
+
+# —— 机构 Sponsor —— 
+class OrganizationCreate(BaseModel):
+    org_name: str = Field(..., description="机构名称")
+    
+
+class OrganizationOut(SponsorOutBase):
+    sponsor_type: Literal["O"] 
+    org_name: str
+    
+
+# —— 个人 Sponsor —— 
+class IndividualCreate(BaseModel):
+    f_name: str = Field(..., description="名")
+    l_name: str = Field(..., description="姓")
+    
+
+class IndividualOut(SponsorOutBase):
+    sponsor_type: Literal["I"] 
+    f_name: str
+    l_name: str
+    
+
+# —— Seminar ↔ Sponsor 关联表 —— 
+class SeminarSponsorCreate(BaseModel):
+    sponsor_id: int
+    amount: float
+
+class SeminarSponsorOut(BaseModel):
+    event_id: int
+    sponsor_id: int
+    amount: float
+
+# —— Seminar 邀请表 —— 
+class InvitationCreate(BaseModel):
+    invitee_name: str
+    invitee_email: str
+    invited_at: datetime
+
+class InvitationOut(InvitationCreate):
+    invitation_id: int
+    event_id: int
+
+# —— Exhibition 报名表 —— 
+class RegistrationCreate(BaseModel):
+    registrant_name: str
+    registrant_email: str
+    registered_at: datetime
+
+class RegistrationOut(RegistrationCreate):
+    registration_id: int
+    event_id: int
 

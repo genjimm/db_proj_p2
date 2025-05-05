@@ -1,6 +1,6 @@
 from typing import Optional
 from fastapi import FastAPI, Response, status, HTTPException, Depends
-from .routers import customer, auth, book, rental
+from .routers import customer, auth, book, rental, seminars, exhibitions, seminar_sponsor, seminar_access, sponsor, exhibition_access
 from pydantic import BaseModel
 from .database import get_db  
 from fastapi.middleware.cors import CORSMiddleware
@@ -26,6 +26,18 @@ app.include_router(auth.router)
 app.include_router(book.router)
 
 app.include_router(rental.router)
+
+app.include_router(seminars.router)
+
+app.include_router(exhibitions.router)
+
+app.include_router(sponsor.router)
+
+app.include_router(seminar_sponsor.router)
+
+app.include_router(seminar_access.router)
+
+app.include_router(exhibition_access.router)
 
 @app.get('/')
 async def root():
