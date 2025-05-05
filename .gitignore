@@ -1,9 +1,0 @@
-hz/
-
-venv/
-*.pyc
-*.pyo
-__pycache__/
-.DS_Store
-.env
-
