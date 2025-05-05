@@ -20,7 +20,14 @@ CREATE SEQUENCE hzs_author_id_seq START WITH 1 INCREMENT BY 1;
 ALTER TABLE hzs_author ALTER COLUMN author_id SET DEFAULT nextval('hzs_author_id_seq');
 
 
+<<<<<<< HEAD
+-- sponsor_id�Լ�
+CREATE SEQUENCE hzs_sponsor_id_seq START WITH 1 INCREMENT BY 1;
+ALTER TABLE hzs_sponsor ALTER COLUMN sponsor_id SET DEFAULT nextval('hzs_sponsor_id_seq');
+
+=======
 -- ����constraints
+>>>>>>> origin/master
 
 ALTER TABLE HZS_CUSTOMER
 ADD CONSTRAINT CK_CUSTOMER_ID_TYPE
@@ -31,6 +38,19 @@ CHECK (ID_TYPE IN ('Passport', 'SSN', 'Driver_License'));
 ALTER TABLE HZS_SPONSOR
 ADD CONSTRAINT CK_SPONSOR_TYPE
 CHECK (SPONSOR_TYPE IN ('INDIVIDUAL', 'ORGANIZATION'));
+
+ALTER TABLE hzs_sponsor
+  DROP CONSTRAINT IF EXISTS ck_sponsor_type;
+
+-- 2. 按单字符 “I”、“O” 重建约束
+ALTER TABLE hzs_sponsor
+  ADD CONSTRAINT ck_sponsor_type
+    CHECK (sponsor_type IN ('I', 'O'));
+
+ALTER TABLE hzs_sponsor
+  ADD COLUMN created_at TIMESTAMP WITH TIME ZONE
+    NOT NULL DEFAULT now();
+
 
 ALTER TABLE HZS_RENTAL
 ADD CONSTRAINT CK_RENTAL_DATES
