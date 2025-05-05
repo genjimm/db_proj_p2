@@ -84,6 +84,24 @@ class RentalOut(BaseModel):
         orm_mode = True
 
 
+class AuthorBase(BaseModel):
+    f_name: str
+    l_name: str
+    email: EmailStr
+    state: str
+    country: str
+    street: str
+    city: str
+
+class AuthorCreate(AuthorBase):
+    pass
+
+class AuthorOut(AuthorBase):
+    author_id: int
+
+    class Config:
+        orm_mode = True
+
 
 
 
