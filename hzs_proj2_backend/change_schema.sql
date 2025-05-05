@@ -1,22 +1,22 @@
--- bookid×Ô¼Ó
+-- bookidï¿½Ô¼ï¿½
 CREATE SEQUENCE hzs_book_id_seq START WITH 1 INCREMENT BY 1;
 ALTER TABLE hzs_book ALTER COLUMN book_id SET DEFAULT nextval('hzs_book_id_seq');
 
--- book_copy copy_id×Ô¼Ó
+-- book_copy copy_idï¿½Ô¼ï¿½
 CREATE SEQUENCE hzs_book_copy_id_seq START WITH 1 INCREMENT BY 1;
 ALTER TABLE hzs_book_copy ALTER COLUMN copy_id SET DEFAULT nextval('hzs_book_copy_id_seq');
 
--- rental_id×Ô¼Ó
+-- rental_idï¿½Ô¼ï¿½
 CREATE SEQUENCE hzs_rental_id_seq START WITH 1 INCREMENT BY 1;
 ALTER TABLE hzs_rental ALTER COLUMN rental_id SET DEFAULT nextval('hzs_rental_id_seq');
 
 
--- customer_id×Ô¼Ó
+-- customer_idï¿½Ô¼ï¿½
 CREATE SEQUENCE hzs_customer_id_seq START WITH 1 INCREMENT BY 1;
 ALTER TABLE hzs_customer ALTER COLUMN customer_id SET DEFAULT nextval('hzs_customer_id_seq');
 
 
--- ¼ÓÈëconstraints
+-- ï¿½ï¿½ï¿½ï¿½constraints
 
 ALTER TABLE HZS_CUSTOMER
 ADD CONSTRAINT CK_CUSTOMER_ID_TYPE

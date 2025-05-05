@@ -32,4 +32,3 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db=Depends(da
 
     return {"access_token": access_token, "token_type": "bearer"}
     
-

@@ -6,7 +6,10 @@ export default function HomePage() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // TODO: 清除登录状态（token），然后跳转到登录页
+    // 清除本地的token 重定向login
+    localStorage.removeItem('token');
+    localStorage.clear();
+
     navigate('/login');
   };
 
@@ -19,8 +22,8 @@ export default function HomePage() {
         </button>
       </header>
       <main className="home-main">
-        {/* 这里放你的业务板块，比如列表、简介、操作入口等 */}
-        <p>This is the home page. Your content goes here.</p>
+        {/* 内容*/}
+        <p>请付费阅览ovo</p>
       </main>
     </div>
   );
