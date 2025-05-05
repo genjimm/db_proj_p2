@@ -2,24 +2,27 @@ import React from 'react';
 import './LoginPage.css';
 import { Link } from 'react-router-dom';
 import { login } from '../utils/api';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
 const [username, setUsername] = React.useState('');
 const [password, setPassword] = React.useState('');
+const location = useLocation();
+// 结合登录之前的网页location，如果有的话就重新导航导存储的位置
+const from = location.state?.from?.pathname || '/home';
 const navigate = useNavigate();
 const handleLogin = async () => {
   try {
     const data = await login(username, password);
     console.log('Login success:', data);
-    navigate('/main');  // 登录成功后跳转
+    // 登录后跳转到主页
+    navigate('/home'); 
   } catch (err) {
-    console.error('Login error:', err.message);
-    alert(err.message.includes('<!DOCTYPE') 
-    ? 'Server error. Please try again later.' 
-    : 'Login failed: ' + err.message);
+    console.error('Login error:', err);
+    alert(err.message);
   }
 };
+
 
   return (
     <div className="login-container">
@@ -59,8 +62,8 @@ const handleLogin = async () => {
         <p className="login-footer">
           Don’t have account?{' '}
           <span className="register-link"><Link to="/register" className="register-link">
-  <strong>Register</strong>
-</Link></span>
+            <strong>Register</strong>
+          </Link></span>
         </p>
       </form>
     </div>

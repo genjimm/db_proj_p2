@@ -1,30 +1,41 @@
-export const login = async (username, password) => {
-  const formData = new URLSearchParams();
-  formData.append('username', username);
-  formData.append('password', password);
+export async function login(username, password) {
+  // append账号密码
+  const form = new URLSearchParams();
+  form.append('username', username);
+  form.append('password', password);
 
+  let response;
   try {
-    const res = await fetch('/api/login', {
+    // fetch后端
+    response = await fetch('http://127.0.0.1:8000/login', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: formData
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: form
     });
-
-    const contentType = res.headers.get('Content-Type') || '';
-    const isJson = contentType.includes('application/json');
-    const raw = await res.text();
-    if (!res.ok) {
-      const message = isJson ? JSON.parse(raw)?.detail : raw.slice(0, 100);
-      throw new Error(`Login failed: ${message}`);
-    }
-    const data = isJson ? JSON.parse(raw) : {};
-    localStorage.setItem('token', data.access_token);
-    window.location.href = '/main';
-    return data;
-  } catch (err) {
-    console.error('Login error:', err);
-    throw new Error(err.message || 'Unexpected login error');
+  } catch (networkError) {
+    throw new Error(`Network error during login: ${networkError.message}`);
   }
-};
+
+  // 如果不是json就报错
+  const contentType = response.headers.get('content-type') || '';
+  if (!contentType.includes('application/json')) {
+    const text = await response.text();
+    throw new Error(`Unexpected non-JSON response: ${text.slice(0, 100)}`);
+  }
+
+  // 解析内容
+  let body;
+  try {
+    body = await response.json();
+  } catch (err) {
+    throw new Error('Failed to parse JSON response');
+  }
+
+  // 登录成功，存入token
+  const token = body.access_token || body.token;
+  if (token) {
+    localStorage.setItem('token', token);
+  }
+  // return 内容
+  return body;
+}
