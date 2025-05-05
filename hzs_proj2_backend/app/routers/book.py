@@ -46,6 +46,19 @@ GET_BOOK_COPIES_QUERY = """
     WHERE book_id = %s
 """
 
+ADD_BOOK_AUTHOR_QUERY = """
+    INSERT INTO hzs_book_author (book_id, author_id)
+    VALUES (%s, %s)
+    RETURNING book_id, author_id
+"""
+
+GET_AUTHORS_BY_BOOK_QUERY = """
+    SELECT a.author_id, a.f_name, a.l_name, a.email, a.state, a.country, a.street, a.city
+    FROM hzs_author a
+    JOIN hzs_book_author ba ON a.author_id = ba.author_id
+    WHERE ba.book_id = %s
+"""
+
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.BookOut)
 async def add_book(book: schemas.BookCreate, db=Depends(database.get_db)):
@@ -62,7 +75,7 @@ async def add_book(book: schemas.BookCreate, db=Depends(database.get_db)):
             detail="An error occurred while adding the book."
         )
 
-    # 返回新增图书相关信息
+    # 鍤欒笣钑殭韪濊暛鍤欒笣钑殭韪濊暛鑺炲殭韪濊暛鍤欒笣钑殭韪濊暛鍤欒獣锟?
     return added_book
 
 @router.get("/{book_id}", response_model=schemas.BookOut)
@@ -104,7 +117,7 @@ async def delete_book_byid(book_id: int, db=Depends(database.get_db)):
 @router.put("/{book_id}", status_code=status.HTTP_200_OK, response_model=schemas.BookOut)
 async def update_book_byid(book_id: int, new_book: schemas.BookCreate, db=Depends(database.get_db)):
     try:
-        # 查询要更新的图书是否存在
+        # 鍤欒笣钑垯鐚佸殭韪濊暛鍤欒潛铔涜暛鑺炲殭韪濊暛鍤欒鐦�钑殭韪濊暛鍤欙拷
         db.execute(GET_BOOK_BY_ID_QUERY, (book_id,))
         old_book = db.fetchone()
         if not old_book:
@@ -113,11 +126,11 @@ async def update_book_byid(book_id: int, new_book: schemas.BookCreate, db=Depend
                 detail=f"Book with id {book_id} does not exist!"
             )
 
-        # 更新图书
+        # 鍤欒笣钑殭韪濊暛鑺炲殭韪濊暛
         db.execute(UPDATE_BOOK_BY_ID_QUERY, (new_book.b_name, new_book.topic, book_id))
         db.connection.commit()
 
-        # 取得更新后的图书
+        # 榫板殭琛涜硞钑殭铦撶督钑殭璜囨綐钑殭锟?
         db.execute(GET_BOOK_BY_ID_QUERY, (book_id,))
         updated_book = db.fetchone()
 
@@ -134,11 +147,11 @@ async def update_book_byid(book_id: int, new_book: schemas.BookCreate, db=Depend
     
 
 
-# 用户点击查看图书会进入一个新的html页面，在这里可以查看图书相关信息，点击添加副本会call这个api，添加这本图书的新的副本
+# 鍤欒槌磋暛鍤欒笣钑殭韪濊暛姗︽９娼樿暛鍤欒笣钑殭韪濊暛鍤欒槌磋暛鍤欒笣钑箷鍤欑瘉tml鐝滃殭璩ｃ剾鍤欒笣钑殭韪濊暛鍤欒笣钑殭韪濊暛鍩存│妫规綐钑殭韪濊暛鍤欒笣钑殭韪濊暛娲樺殭韪濊暛鍤欒笣钑殭韪濊暛鍤欒笣钑檼鍤欒笣钑殭韪濊暛鍤欑all鍤欒笣钑殭绐畃i鍤欒笣钑殭韪濊暛鍤欒笣钑殭璩ゆ帥鑺炲殭韪濊暛鍤欒笣钑箷璀殭韪濊暛鍤欙拷
 @router.post("/{book_id}/copy", status_code=status.HTTP_201_CREATED, response_model=schemas.BookCopyOut)
 async def add_book_copy(book_id: int, copy: schemas.BookCopyCreate, db=Depends(database.get_db)):
     try:
-        # 查看这本书是否存在
+        # 鍤欒场鑹樺殭璩ゆ帥鍤欒笣钑殭瑜掔榾钑殭韪濊暛鍤欙拷
         db.execute(GET_BOOK_BY_ID_QUERY, (book_id,))
         book = db.fetchone()
         if not book:
@@ -147,12 +160,12 @@ async def add_book_copy(book_id: int, copy: schemas.BookCopyCreate, db=Depends(d
                 detail=f"Book with id {book_id} does not exist!"
             )
 
-        # 添加新的副本
+        # 鍤欒笣钑殭韪濊暛鍤欒潛鑵旇硞钑殭韪濊暛
         db.execute(ADD_BOOK_COPY_QUERY, (book_id, copy.status))
         added_copy = db.fetchone()
         db.connection.commit()
 
-        # 返回新副本的相关信息
+        # 鍤欒笣钑殭韪濊暛鍤欒潛璩傝暛鍤欒笣钑殭韪濊暛鍤欒笣钑殭韪濊暛鍤欒獣锟?
         logger.info(f"Book copy added successfully: {added_copy}")
         return added_copy
     except Exception as e:
@@ -164,11 +177,11 @@ async def add_book_copy(book_id: int, copy: schemas.BookCopyCreate, db=Depends(d
         )
 
 
-# 用户在查看图书页面点击查看所有副本就可以显示该书的所有副本
+# 鍤欒槌磋暛鍤欒鑴よ墭鑺炲殭韪濊暛鐝滃殭韪濊暛鍤欒笣钑殭璩¤墭鍤欒笣钑殭璜嬭硞钑殭韪濊暛鍤欒珖閬歌暛鍤欒笣钑殭韪濊暛灏ㄥ殭韪濊暛鍤欒笣钑殭韪濊暛鍤欒笣钑偨鍤欒笣钑殭锟?
 @router.get("/{book_id}/copies", response_model=List[schemas.BookCopyOut])
 async def get_book_copies(book_id: int, db=Depends(database.get_db)):
     try:
-        # 检查这本书是否存在
+        # 鍤欒笣钑殭韪濊暛婕规钑殭韪濊暛銈诲殭韪濊暛鍤欒笣钑?
         db.execute(GET_BOOK_BY_ID_QUERY, (book_id,))
         book = db.fetchone()
         if not book:
@@ -177,7 +190,7 @@ async def get_book_copies(book_id: int, db=Depends(database.get_db)):
                 detail=f"Book with id {book_id} does not exist!"
             )
 
-        # 取得所有这本书的副本
+        # 榫板殭韪濊暛鍤欒笣钑殭韪濊暛鍤欒长鎺涘殭韪濊暛璀殭韪濊暛鍤欙拷
         db.execute(GET_BOOK_COPIES_QUERY, (book_id,))
         copies = db.fetchall()
 
@@ -189,3 +202,26 @@ async def get_book_copies(book_id: int, db=Depends(database.get_db)):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An error occurred while retrieving book copies."
         )
+    
+# Add author to a book
+@router.post("/{book_id}/authors", status_code=status.HTTP_201_CREATED)
+async def add_author_to_book(book_id: int, author_id: int, db=Depends(database.get_db)):
+    try:
+        db.execute(ADD_BOOK_AUTHOR_QUERY, (book_id, author_id))
+        relationship = db.fetchone()
+        db.connection.commit()
+        return relationship
+    except Exception as e:
+        db.connection.rollback()
+        logger.error(f"Error adding author to book: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An error occurred while adding the author to the book."
+        )
+
+# Get authors of a book
+@router.get("/{book_id}/authors", response_model=List[schemas.AuthorOut])
+async def get_authors_of_book(book_id: int, db=Depends(database.get_db)):
+    db.execute(GET_AUTHORS_BY_BOOK_QUERY, (book_id,))
+    authors = db.fetchall()
+    return authors
