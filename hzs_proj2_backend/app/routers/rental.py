@@ -30,6 +30,13 @@ UPDATE_RENTAL_RETURN_DATE_QUERY = """
     RETURNING rental_id, rental_status, borrow_date, expected_return_date, actual_return_date, customer_id, copy_id
 """
 
+UPDATE_LATE_RENTAL_RETURN_DATE_QUERY = """
+    UPDATE hzs_rental
+    SET actual_return_date = %s, rental_status = 'LATE'
+    WHERE rental_id = %s
+    RETURNING rental_id, rental_status, borrow_date, expected_return_date, actual_return_date, customer_id, copy_id
+"""
+
 GET_RENTALS_BY_CUSTOMER_QUERY = """
     SELECT rental_id, rental_status, borrow_date, expected_return_date, actual_return_date, customer_id, copy_id
     FROM hzs_rental
@@ -41,6 +48,8 @@ UPDATE_BOOK_COPY_STATUS_QUERY = """
     SET status = %s
     WHERE copy_id = %s
 """
+
+
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.RentalOut)
 async def create_rental(rental: schemas.RentalCreate, db=Depends(database.get_db)):
@@ -104,9 +113,23 @@ async def get_rental_by_id(rental_id: int, db=Depends(database.get_db)):
 @router.put("/{rental_id}/return", response_model=schemas.RentalOut)
 async def return_rental(rental_id: int, return_date: schemas.RentalReturn, db=Depends(database.get_db)):
     try:
-        # Update the rental with the actual return date
-        db.execute(UPDATE_RENTAL_RETURN_DATE_QUERY, (return_date.actual_return_date, rental_id))
-        updated_rental = db.fetchone()
+        db.execute(GET_RENTAL_BY_ID_QUERY, (rental_id,))
+        rental = db.fetchone()
+
+        if not rental:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Rental with id {rental_id} does not exist!"
+            )
+        
+        is_late = return_date > rental['expected_return_date']
+        if is_late:
+            db.execute(UPDATE_LATE_RENTAL_RETURN_DATE_QUERY, (return_date.actual_return_date, rental_id))
+            updated_rental = db.fetchone()
+        else:
+            # Update the rental with the actual return date
+            db.execute(UPDATE_RENTAL_RETURN_DATE_QUERY, (return_date.actual_return_date, rental_id))
+            updated_rental = db.fetchone()
 
         if not updated_rental:
             raise HTTPException(
