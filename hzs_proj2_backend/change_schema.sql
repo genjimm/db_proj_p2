@@ -15,12 +15,19 @@ ALTER TABLE hzs_rental ALTER COLUMN rental_id SET DEFAULT nextval('hzs_rental_id
 CREATE SEQUENCE hzs_customer_id_seq START WITH 1 INCREMENT BY 1;
 ALTER TABLE hzs_customer ALTER COLUMN customer_id SET DEFAULT nextval('hzs_customer_id_seq');
 
+-- author_id auto increment
+CREATE SEQUENCE hzs_author_id_seq START WITH 1 INCREMENT BY 1;
+ALTER TABLE hzs_author ALTER COLUMN author_id SET DEFAULT nextval('hzs_author_id_seq');
 
 
+<<<<<<< HEAD
 -- sponsor_id�Լ�
 CREATE SEQUENCE hzs_sponsor_id_seq START WITH 1 INCREMENT BY 1;
 ALTER TABLE hzs_sponsor ALTER COLUMN sponsor_id SET DEFAULT nextval('hzs_sponsor_id_seq');
 
+=======
+-- ����constraints
+>>>>>>> origin/master
 
 ALTER TABLE HZS_CUSTOMER
 ADD CONSTRAINT CK_CUSTOMER_ID_TYPE
