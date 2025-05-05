@@ -1,5 +1,5 @@
 import React from 'react';
-import './LoginPage.css';
+import './LoginAndRegister.css';
 import { Link } from 'react-router-dom';
 import { login } from '../utils/api';
 import { useLocation, useNavigate } from 'react-router-dom';
