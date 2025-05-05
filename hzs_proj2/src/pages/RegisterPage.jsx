@@ -1,95 +1,122 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import './RegisterPage.css';
+import { useNavigate, Link } from 'react-router-dom';
+import './LoginAndRegister.css';
+import { register } from '../utils/api';
+
+const allowedIdTypes = ['Passport', 'SSN', 'DriverLicense'];
+const emailRegex    = /@/;
+const nameRegex     = /^[^\d]+$/;  // 不含数字
+const phoneRegex    = /^\+?\d{7,15}$/; //7到15
 
 export default function RegisterPage() {
+  const [lName, setLName] = useState('');
+  const [fName, setFName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [idType, setIdType] = useState(allowedIdTypes[0]);
+  const [idNum, setIdNum] = useState('');
+  const [password, setPassword] = useState('');
+
   const navigate = useNavigate();
-  const [form, setForm] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirm: ''
-  });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm(f => ({ ...f, [name]: value }));
-  };
-
-  const handleSubmit = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    // TODO: 验证两次密码是否一致，调用注册 API
-    console.log('Register form:', form);
-    // 注册成功后跳转到登录页
-    navigate('/login');
+
+    if (!nameRegex.test(lName) || !nameRegex.test(fName)) {
+      alert('姓和名不能包含数字');
+      return;
+    }
+    if (!emailRegex.test(email)) {
+      alert('邮箱格式不正确');
+      return;
+    }
+    if (!phoneRegex.test(phone)) {
+      alert('手机号格式不正确');
+      return;
+    }
+    try {
+        await register({
+          l_name: lName,
+          f_name: fName,
+          phone,
+          email,
+          id_type: idType,
+          id_num: idNum,
+          password
+        });
+        alert('注册成功，请登录');
+        navigate('/login');
+    } catch (err) {
+      console.error('Register error:', err);
+      alert('注册失败：' + err.message);
+    }
   };
-
+  
   return (
-    <div className="auth-container">
-      <form className="auth-form" onSubmit={handleSubmit}>
-        <h2 className="auth-title">Register</h2>
-
+    <div className="login-container">
+      <form className="login-form" onSubmit={handleRegister}>
+        <h2 className="login-title">Register</h2>
         <div className="form-group">
-          <label htmlFor="name">Your name</label>
+          <label>Last Name</label>
           <input
-            id="name"
-            name="name"
-            type="text"
-            placeholder="Enter your name"
-            value={form.name}
-            onChange={handleChange}
-            required
+            type="text" value={lName}
+            onChange={e => setLName(e.target.value)} required
           />
         </div>
-
         <div className="form-group">
-          <label htmlFor="email">Email</label>
+          <label>First Name</label>
           <input
-            id="email"
-            name="email"
-            type="email"
-            placeholder="Enter your email"
-            value={form.email}
-            onChange={handleChange}
-            required
+            type="text" value={fName}
+            onChange={e => setFName(e.target.value)} required
           />
         </div>
-
         <div className="form-group">
-          <label htmlFor="password">Password</label>
+          <label>Phone</label>
           <input
-            id="password"
-            name="password"
-            type="password"
-            placeholder="Enter a password"
-            value={form.password}
-            onChange={handleChange}
-            required
+            type="tel" value={phone}
+            onChange={e => setPhone(e.target.value)} required
           />
         </div>
-
         <div className="form-group">
-          <label htmlFor="confirm">Confirm Password</label>
+          <label>Email</label>
           <input
-            id="confirm"
-            name="confirm"
-            type="password"
-            placeholder="Repeat your password"
-            value={form.confirm}
-            onChange={handleChange}
-            required
+            type="email" value={email}
+            onChange={e => setEmail(e.target.value)} required
           />
         </div>
-
-        <button type="submit" className="auth-button">Register</button>
-
-        <p className="auth-footer">
-          Already have an account?{' '}
-          <Link to="/login" className="auth-link">
+        <div className="form-group">
+          <label>ID Type</label>
+          <select value={idType} onChange={e => setIdType(e.target.value)}>
+            {allowedIdTypes.map(type => (
+              <option key={type} value={type}>{type}</option>
+            ))}
+          </select>
+        </div>
+        <div className="form-group">
+          <label>ID Number</label>
+          <input
+            type="text" value={idNum}
+            onChange={e => setIdNum(e.target.value)} required
+          />
+        </div>
+        <div className="form-group">
+          <label>Password</label>
+          <input
+            type="password" value={password}
+            onChange={e => setPassword(e.target.value)} required
+          />
+        </div>
+        <button type="submit" className="login-button">
+          Register
+        </button>
+      
+        <p className="login-footer">
+          Already have account?{' '}
+          <span className="register-link"><Link to="/login" className="register-link">
             <strong>Login</strong>
-          </Link>
+          </Link></span>
         </p>
       </form>
     </div>
-);
+  );
 }

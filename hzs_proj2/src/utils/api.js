@@ -39,3 +39,17 @@ export async function login(username, password) {
   // return 内容
   return body;
 }
+
+export async function register(user) {
+  const response = await fetch('http://127.0.0.1:8000/customer/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(user)
+  });
+  const body = await response.json();
+  if (!response.ok) {
+    const errMsg = body.detail || body.message || JSON.stringify(body);
+    throw new Error(errMsg);
+  }
+  return body;
+}
