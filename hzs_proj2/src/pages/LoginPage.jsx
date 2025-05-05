@@ -1,11 +1,32 @@
 import React from 'react';
-import './LoginPage.css';
+import './LoginAndRegister.css';
 import { Link } from 'react-router-dom';
+import { login } from '../utils/api';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
+const [username, setUsername] = React.useState('');
+const [password, setPassword] = React.useState('');
+const location = useLocation();
+// 结合登录之前的网页location，如果有的话就重新导航导存储的位置
+const from = location.state?.from?.pathname || '/home';
+const navigate = useNavigate();
+const handleLogin = async () => {
+  try {
+    const data = await login(username, password);
+    console.log('Login success:', data);
+    // 登录后跳转到主页
+    navigate('/home'); 
+  } catch (err) {
+    console.error('Login error:', err);
+    alert(err.message);
+  }
+};
+
+
   return (
     <div className="login-container">
-      <form className="login-form">
+      <form className="login-form" onSubmit={(e) => { e.preventDefault(); handleLogin(); }}>
         <h2 className="login-title">Login</h2>
 
         <div className="form-group">
@@ -16,6 +37,8 @@ export default function LoginPage() {
             type="text"
             placeholder="Enter your name"
             required
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </div>
 
@@ -27,6 +50,8 @@ export default function LoginPage() {
             type="password"
             placeholder="Enter your password"
             required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
 
@@ -37,8 +62,8 @@ export default function LoginPage() {
         <p className="login-footer">
           Don’t have account?{' '}
           <span className="register-link"><Link to="/register" className="register-link">
-  <strong>Register</strong>
-</Link></span>
+            <strong>Register</strong>
+          </Link></span>
         </p>
       </form>
     </div>
