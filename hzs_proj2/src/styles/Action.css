@@ -1,0 +1,23 @@
+.input-action { margin-bottom: 1rem; }
+.input-action__label { display: block; margin-bottom: .5rem; color: #333; }
+.input-action__row { display:flex; gap:8px; }
+.input-action__input { flex:1; padding:.5rem; border:1px solid #ccc; border-radius:4px; }
+.input-action__button {
+  padding:.5rem 1rem;
+  background:#4CAF50; color:white; border:none; border-radius:4px; cursor:pointer;
+}
+.input-action__button:disabled { background:#A5D6A7; cursor: not-allowed; }
+
+.action-group { display:flex; flex-wrap:wrap; gap:8px; }
+.action-button {
+  background:#4CAF50; color:#fff;
+  border:none; padding:.6rem 1rem; border-radius:4px; cursor:pointer;
+}
+.action-button:hover { background:#45A049; }
+
+.detail-panel {
+  background:#fff; border:2px solid #4CAF50; border-radius:8px;
+  padding:1.5rem; margin:1rem 0; box-shadow:0 2px 4px rgba(0,0,0,0.1);
+}
+.detail-panel__title { margin-bottom:1rem; color:#388E3C; }
+.detail-panel__body { display:flex; flex-direction:column; gap:1rem; }

@@ -1,0 +1,36 @@
+.book-list {
+    background: #fff;
+    border: 1px solid #4CAF50;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .copy-list h3 {
+    margin-top: 0;
+    color: #388E3C;
+  }
+  
+  .copy-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+  }
+  
+  .copy-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .copy-list button {
+    padding: 0.5rem 1rem;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .copy-list button:hover {
+    background-color: #45A049;
+  }

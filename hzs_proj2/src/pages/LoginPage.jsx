@@ -1,8 +1,9 @@
 import React from 'react';
-import './LoginAndRegister.css';
 import { Link } from 'react-router-dom';
-import { login } from '../utils/api';
 import { useLocation, useNavigate } from 'react-router-dom';
+import '../styles/LoginAndRegister.css';
+import { login } from '../utils/api';
+
 
 export default function LoginPage() {
 const [username, setUsername] = React.useState('');

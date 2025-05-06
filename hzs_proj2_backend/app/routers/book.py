@@ -75,7 +75,7 @@ async def add_book(book: schemas.BookCreate, db=Depends(database.get_db)):
             detail="An error occurred while adding the book."
         )
 
-    # 嚙踝蕭嚙踝蕭嚙踝蕭嚙踝蕭芞嚙踝蕭嚙踝蕭嚙踝蕭嚙誕�?
+    # 嚙踝蕭嚙踝蕭嚙踝蕭嚙踝蕭芞嚙踝蕭嚙踝蕭嚙踝蕭嚙誕�?
     return added_book
 
 @router.get("/{book_id}", response_model=schemas.BookOut)
@@ -130,7 +130,7 @@ async def update_book_byid(book_id: int, new_book: schemas.BookCreate, db=Depend
         db.execute(UPDATE_BOOK_BY_ID_QUERY, (new_book.b_name, new_book.topic, book_id))
         db.connection.commit()
 
-        # 龰嚙衛賂蕭嚙蝓綽蕭嚙談潘蕭嚙�?
+        # 龰嚙衛賂蕭嚙蝓綽蕭嚙談潘蕭嚙�?
         db.execute(GET_BOOK_BY_ID_QUERY, (book_id,))
         updated_book = db.fetchone()
 
@@ -165,7 +165,7 @@ async def add_book_copy(book_id: int, copy: schemas.BookCopyCreate, db=Depends(d
         added_copy = db.fetchone()
         db.connection.commit()
 
-        # 嚙踝蕭嚙踝蕭嚙蝓賂蕭嚙踝蕭嚙踝蕭嚙踝蕭嚙踝蕭嚙誕�?
+        # 嚙踝蕭嚙踝蕭嚙蝓賂蕭嚙踝蕭嚙踝蕭嚙踝蕭嚙踝蕭嚙誕�?
         logger.info(f"Book copy added successfully: {added_copy}")
         return added_copy
     except Exception as e:
@@ -177,11 +177,11 @@ async def add_book_copy(book_id: int, copy: schemas.BookCopyCreate, db=Depends(d
         )
 
 
-# 嚙衛鳴蕭嚙誹脤艘芞嚙踝蕭珜嚙踝蕭嚙踝蕭嚙賡艘嚙踝蕭嚙請賂蕭嚙踝蕭嚙談選蕭嚙踝蕭嚙踝蕭尨嚙踝蕭嚙踝蕭嚙踝蕭嚙踝蕭邽嚙踝蕭嚙�?
+# 嚙衛鳴蕭嚙誹脤艘芞嚙踝蕭珜嚙踝蕭嚙踝蕭嚙賡艘嚙踝蕭嚙請賂蕭嚙踝蕭嚙談選蕭嚙踝蕭嚙踝蕭尨嚙踝蕭嚙踝蕭嚙踝蕭嚙踝蕭邽嚙踝蕭嚙�?
 @router.get("/{book_id}/copies", response_model=List[schemas.BookCopyOut])
 async def get_book_copies(book_id: int, db=Depends(database.get_db)):
     try:
-        # 嚙踝蕭嚙踝蕭漹橘蕭嚙踝蕭セ嚙踝蕭嚙踝�?
+        # 嚙踝蕭嚙踝蕭漹橘蕭嚙踝蕭セ嚙踝蕭嚙踝�?
         db.execute(GET_BOOK_BY_ID_QUERY, (book_id,))
         book = db.fetchone()
         if not book:

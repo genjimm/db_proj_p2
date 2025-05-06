@@ -1,3 +1,63 @@
+const BASE_URL = 'http://127.0.0.1:8000';
+
+async function postJson(path, data) {
+  const response = await fetch(`${BASE_URL}${path}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  const json = await response.json();
+  if (!response.ok) {
+    const errMsg = json.detail || json.message || JSON.stringify(json);
+    throw new Error(errMsg);
+  }
+  return json;
+}
+
+async function getJson(path) {
+  const response = await fetch(`${BASE_URL}${path}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  const json = await response.json();
+  if (!response.ok) {
+    const errMsg = json.detail || json.message || JSON.stringify(json);
+    throw new Error(errMsg);
+  }
+  return json;
+}
+
+async function putJson(path, data) {
+  const response = await fetch(`${BASE_URL}${path}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  const json = await response.json();
+  if (!response.ok) {
+    const errMsg = json.detail || json.message || JSON.stringify(json);
+    throw new Error(errMsg);
+  }
+  return json;
+}
+
+async function deleteReq(path) {
+  const response = await fetch(`${BASE_URL}${path}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) {
+    let errMsg;
+    try {
+      const json = await response.json();
+      errMsg = json.detail || json.message || JSON.stringify(json);
+    } catch {
+      errMsg = `Status ${response.status}`;
+    }
+    throw new Error(errMsg);
+  }
+  return;
+}
+
 export async function login(username, password) {
   // append账号密码
   const form = new URLSearchParams();
@@ -40,16 +100,38 @@ export async function login(username, password) {
   return body;
 }
 
-export async function register(user) {
-  const response = await fetch('http://127.0.0.1:8000/customer/', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(user)
-  });
-  const body = await response.json();
-  if (!response.ok) {
-    const errMsg = body.detail || body.message || JSON.stringify(body);
-    throw new Error(errMsg);
-  }
-  return body;
+export function register(user) {
+  return postJson('/customer/', user);
+}
+
+export function addBook(book) {
+  return postJson('/book/', book);
+}
+
+export function deleteBook(bookId) {
+  return deleteReq(`/book/${bookId}`);
+}
+
+export function updateBook(bookId, bookData) {
+  return putJson(`/book/${bookId}`, bookData);
+}
+
+export function addBookCopy(bookId, copyData) {
+  return postJson(`/book/${bookId}/copy`, copyData);
+}
+
+export function getBookCopies(bookId) {
+  return getJson(`/book/${bookId}/copies`);
+}
+
+export function addAuthorToBook(bookId, authorData) {
+  return postJson(`/book/${bookId}/authors`, authorData);
+}
+
+export function getBookAuthors(bookId) {
+  return getJson(`/book/${bookId}/authors`);
+}
+
+export function getBookById(bookId) {
+  return getJson(`/book/${bookId}`);
 }

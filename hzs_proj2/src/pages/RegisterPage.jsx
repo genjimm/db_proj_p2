@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import './LoginAndRegister.css';
+import '../styles/LoginAndRegister.css';
 import { register } from '../utils/api';
 
 const allowedIdTypes = ['Passport', 'SSN', 'DriverLicense'];
