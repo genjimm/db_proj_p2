@@ -1,0 +1,49 @@
+/* styles/HomePage.css */
+
+/* 总容器样式 */
+.homepage {
+  display: flex;
+  justify-content: space-around;  /* 水平排列卡片，或根据需要用列布局 */
+  padding: 20px;
+  background-color: #f9fef9;       /* 淡绿色背景，突出主题色 */
+}
+
+/* 卡片容器样式 */
+.manage-card {
+  flex: 1 1 30%;
+  background: #ffffff;
+  border: 2px solid #4CAF50;       /* 绿色边框作为卡片强调色 */
+  border-radius: 8px;
+  margin: 10px;
+  padding: 15px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 卡片标题 */
+.manage-card-title {
+  font-size: 1.2em;
+  color: #388E3C;                 /* 深绿色字体 */
+  margin-bottom: 12px;
+}
+
+/* 按钮容器，确保多个按钮并排或换行布局 */
+.manage-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 按钮样式 */
+.manage-card-actions button {
+  background-color: #4CAF50;      /* 绿色主色按钮 */
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  font-size: 1em;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.manage-card-actions button:hover {
+  background-color: #45A049;      /* 按钮悬停变暗 */
+}

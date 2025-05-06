@@ -1,0 +1,63 @@
+
+.book-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background-color: #f9fef9; /* 淡绿色背景，突出主体 */
+  min-height: calc(100vh - 60px); /* 扣除导航栏高度 */
+}
+  
+  .book-page h2 {
+    margin: 0;
+    font-size: 1.75rem;
+    color: #388E3C;
+  }
+  
+  .book-page hr {
+    margin: 1rem 0 2rem;
+    border: none;
+    border-top: 2px solid #4CAF50;
+  }
+  
+  .book-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .book-actions button {
+    background-color: #4CAF50;
+    color: #fff;
+    
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .book-actions button:hover {
+    background-color: #45A049;
+  }
+  
+  .book-actions button.active {
+    background-color: #388E3C;
+  }
+  
+  .book-content {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1.5rem;
+  }
+  
+  .message {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+    border-radius: 4px;
+  }

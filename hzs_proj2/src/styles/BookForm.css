@@ -1,0 +1,58 @@
+/* src/components/BookForm.css */
+
+.book-form {
+  background: #fff;
+  border: 1px solid #4CAF50;
+  border-radius: 8px;
+  padding: 1.5rem;
+  max-width: 400px;
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.form-error {
+  color: #f44336;
+  margin-bottom: 1rem;
+}
+
+.form-submit {
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.form-submit:disabled {
+  background-color: #A5D6A7;
+  cursor: not-allowed;
+}
+
+.form-submit:hover:enabled {
+  background-color: #45A049;
+}
