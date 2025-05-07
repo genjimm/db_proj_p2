@@ -1,0 +1,212 @@
+.rental-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background-color: #f9fef9;
+  min-height: calc(100vh - 60px);
+}
+
+.rental-page h2 {
+  margin: 0;
+  font-size: 1.75rem;
+  color: #388E3C;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.rental-actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+  width: 100%;
+}
+
+.rental-actions button {
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.rental-actions button:hover {
+  background-color: #45A049;
+}
+
+.rental-actions button.active {
+  background-color: #388E3C;
+}
+
+.rental-content {
+  width: 100%;
+  max-width: 800px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 表单样式 */
+.rental-form {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.form-button {
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+
+.form-button:hover {
+  background-color: #45A049;
+}
+
+.form-error {
+  color: #d32f2f;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background-color: #ffebee;
+  border-radius: 4px;
+}
+
+.form-message {
+  color: #2e7d32;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background-color: #e8f5e9;
+  border-radius: 4px;
+}
+
+/* 列表样式 */
+.rental-list {
+  width: 100%;
+}
+
+.search-form {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-form input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+
+.search-form input:focus {
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.search-form button {
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.search-form button:hover {
+  background-color: #45A049;
+}
+
+.rental-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.rental-table th,
+.rental-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.rental-table th {
+  background-color: #f5f5f5;
+  font-weight: 500;
+  color: #333;
+}
+
+.return-button {
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.return-button:hover {
+  background-color: #45A049;
+}
+
+/* 消息样式 */
+.message,
+.error {
+  padding: 1rem;
+  border-radius: 4px;
+  margin: 1rem 0;
+}
+
+.message {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.error {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+.no-data {
+  text-align: center;
+  color: #666;
+  padding: 2rem;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+} 

@@ -135,3 +135,72 @@ export function getBookAuthors(bookId) {
 export function getBookById(bookId) {
   return getJson(`/book/${bookId}`);
 }
+
+export function addAuthor(author) {
+  return postJson('/author/', author);
+}
+
+export function getAuthorById(authorId) {
+  return getJson(`/author/${authorId}`);
+}
+
+export function updateAuthor(authorId, authorData) {
+  return putJson(`/author/${authorId}`, authorData);
+}
+
+export function deleteAuthor(authorId) {
+  return deleteReq(`/author/${authorId}`);
+}
+
+// 租借相关 API
+export const addRental = async (rentalData) => {
+  const response = await fetch(`${BASE_URL}/rental/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(rentalData),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || '创建租借记录失败');
+  }
+
+  return response.json();
+};
+
+export const getRentalById = async (rentalId) => {
+  const response = await fetch(`${BASE_URL}/rental/${rentalId}`);
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || '获取租借记录失败');
+  }
+
+  return response.json();
+};
+
+export const returnRental = async (rentalId) => {
+  const response = await fetch(`${BASE_URL}/rental/${rentalId}/return`, {
+    method: 'PUT',
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || '归还图书失败');
+  }
+
+  return response.json();
+};
+
+export const getRentalsByCustomer = async (customerId) => {
+  const response = await fetch(`${BASE_URL}/rental/customer/${customerId}`);
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || '获取顾客租借记录失败');
+  }
+
+  return response.json();
+};

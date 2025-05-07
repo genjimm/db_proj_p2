@@ -1,0 +1,119 @@
+.author-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background-color: #f9fef9;
+  min-height: calc(100vh - 60px);
+}
+
+.author-page h2 {
+  margin: 0;
+  font-size: 1.75rem;
+  color: #388E3C;
+}
+
+.author-actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.author-actions button {
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.author-actions button:hover {
+  background-color: #45A049;
+}
+
+.author-actions button.active {
+  background-color: #388E3C;
+}
+
+.author-form {
+  background: #fff;
+  border: 1px solid #4CAF50;
+  border-radius: 8px;
+  padding: 1.5rem;
+  max-width: 400px;
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.form-button {
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.form-button:hover {
+  background-color: #45A049;
+}
+
+.form-error {
+  color: #d32f2f;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background-color: #ffebee;
+  border-radius: 4px;
+}
+
+.form-message {
+  color: #2e7d32;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background-color: #e8f5e9;
+  border-radius: 4px;
+}
+
+.update-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.message {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+  border-radius: 4px;
+  text-align: center;
+} 
