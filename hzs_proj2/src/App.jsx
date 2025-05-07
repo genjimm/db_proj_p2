@@ -2,12 +2,12 @@ import './App.css';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-// import RegisterPage from './pages/AuthorPage';
-// import RegisterPage from './pages/RentalPage';
 import HomePage from './pages/HomePage';
 import ProtectRoute from './components/ProtectRoute';
-import NavBar from '../src/components/NavBar';
+import NavBar from './components/NavBar';
 import BookPage from './pages/BookPage';
+import AuthorPage from './pages/AuthorPage';
+import RentalPage from './pages/RentalPage';
 
 function Main() {
   const { pathname } = useLocation();
@@ -20,41 +20,36 @@ function Main() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
-
         <Route path="/register" element={<RegisterPage />} />
+        
         <Route
-          path="/home"
+          path="/books"
           element={
             <ProtectRoute>
               <BookPage />
             </ProtectRoute>
           }
         />
-        {/* <Route
-          path="/books"
-          element={
-            <ProtectedRoute>
-              <BookPage />
-            </ProtectedRoute>
-          }
-        /> */}
-        {/* <Route
+        
+        <Route
           path="/authors"
           element={
-            <ProtectedRoute>
+            <ProtectRoute>
               <AuthorPage />
-            </ProtectedRoute>
+            </ProtectRoute>
           }
         />
+        
         <Route
           path="/rentals"
           element={
-            <ProtectedRoute>
+            <ProtectRoute>
               <RentalPage />
-            </ProtectedRoute>
+            </ProtectRoute>
           }
-        /> */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        />
+        
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </>
   );

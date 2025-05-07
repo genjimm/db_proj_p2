@@ -4,12 +4,12 @@ import { NavLink } from 'react-router-dom';
 import '../styles/NavBar.css';
 
 export default function NavBar() {
-  const username = localStorage.getItem('username') || 'Guest';
+  const userFullName = localStorage.getItem('userFullName') || 'Guest';
 
   return (
     <nav className="navbar">
       <div className="navbar-left">
-        Welcome, {username}
+        Welcome, {userFullName}
       </div>
       <div className="navbar-spacer" />
       <div className="navbar-links">

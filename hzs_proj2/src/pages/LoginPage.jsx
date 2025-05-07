@@ -10,14 +10,18 @@ const [username, setUsername] = React.useState('');
 const [password, setPassword] = React.useState('');
 const location = useLocation();
 // 结合登录之前的网页location，如果有的话就重新导航导存储的位置
-const from = location.state?.from?.pathname || '/home';
+const from = location.state?.from?.pathname || '/books';
 const navigate = useNavigate();
 const handleLogin = async () => {
   try {
     const data = await login(username, password);
     console.log('Login success:', data);
-    // 登录后跳转到主页
-    navigate('/home'); 
+    // Save user's full name
+    if (data.f_name && data.l_name) {
+      localStorage.setItem('userFullName', `${data.f_name} ${data.l_name}`);
+    }
+    // 登录后跳转到图书管理页面
+    navigate('/books'); 
   } catch (err) {
     console.error('Login error:', err);
     alert(err.message);
@@ -61,7 +65,7 @@ const handleLogin = async () => {
         </button>
 
         <p className="login-footer">
-          Don’t have account?{' '}
+          Don't have account?{' '}
           <span className="register-link"><Link to="/register" className="register-link">
             <strong>Register</strong>
           </Link></span>
