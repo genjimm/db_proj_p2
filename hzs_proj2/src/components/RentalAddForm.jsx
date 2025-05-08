@@ -36,7 +36,14 @@ function RentalAddForm({ onSubmit }) {
     }
 
     try {
-      const newRental = await addRental(formData);
+      // Format dates to ISO string
+      const rentalData = {
+        ...formData,
+        borrow_date: borrowDate.toISOString(),
+        expected_return_date: expectedReturnDate.toISOString()
+      };
+
+      const newRental = await addRental(rentalData);
       onSubmit(newRental);
       setFormData({
         customer_id: '',
@@ -46,7 +53,8 @@ function RentalAddForm({ onSubmit }) {
       });
       setError('');
     } catch (err) {
-      setError(`Failed to create rental: ${err.message}`);
+      console.error('Rental creation error:', err);
+      setError(err.message || 'Failed to create rental');
     }
   };
 
@@ -81,7 +89,7 @@ function RentalAddForm({ onSubmit }) {
         <input
           id="borrow_date"
           name="borrow_date"
-          type="date"
+          type="datetime-local"
           value={formData.borrow_date}
           onChange={handleChange}
           required
@@ -92,7 +100,7 @@ function RentalAddForm({ onSubmit }) {
         <input
           id="expected_return_date"
           name="expected_return_date"
-          type="date"
+          type="datetime-local"
           value={formData.expected_return_date}
           onChange={handleChange}
           required

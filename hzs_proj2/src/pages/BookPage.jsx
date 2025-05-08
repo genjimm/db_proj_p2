@@ -2,25 +2,28 @@ import React, { useState } from 'react';
 import '../styles/BookPage.css';
 import BookAddForm from '../components/BookAddForm';
 import BookEditForm from '../components/BookEditForm';
-import { addBook, updateBook, deleteBook } from '../utils/api';
+import { addBook, updateBook, deleteBook, addBookCopy } from '../utils/api';
 
 export default function BookPage() {
-  const [action, setAction] = useState('add');
+  const [activeForm, setActiveForm] = useState('add');
   const [editData, setEditData] = useState(null);
   const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
 
   const resetState = () => {
     setEditData(null);
     setMessage('');
+    setError('');
   };
 
   // Add a new book
-  const handleAdd = async (bookData) => {
+  const handleAddBook = async (bookData) => {
     try {
       const newBook = await addBook(bookData);
       setMessage(`Book ${newBook.book_id} added successfully.`);
+      setError('');
     } catch (err) {
-      setMessage(`Failed to add book: ${err.message}`);
+      setError(`Failed to add book: ${err.message}`);
     }
   };
 
@@ -43,7 +46,7 @@ export default function BookPage() {
     try {
       const updated = await updateBook(editData.book_id, bookData);
       setMessage(`Book ${updated.book_id} updated successfully.`);
-      setAction('add');
+      setActiveForm('add');
       setEditData(null);
     } catch (err) {
       setMessage(`Failed to update book: ${err.message}`);
@@ -61,32 +64,44 @@ export default function BookPage() {
     }
   };
 
+  const handleAddCopy = async (bookId) => {
+    try {
+      const newCopy = await addBookCopy(bookId, { status: 'AVAILABLE' });
+      setMessage(`Book copy ${newCopy.copy_id} added successfully.`);
+      setError('');
+    } catch (err) {
+      setError(`Failed to add book copy: ${err.message}`);
+    }
+  };
+
   return (
     <div className="book-page">
       <h2>Book Management</h2>
       <div className="book-actions">
-        {['add', 'edit'].map((act) => (
-          <button
-            key={act}
-            className={action === act ? 'active' : ''}
-            onClick={() => { setAction(act); resetState(); }}
-          >
-            {act.charAt(0).toUpperCase() + act.slice(1)}
-          </button>
-        ))}
+        <button
+          className={activeForm === 'add' ? 'active' : ''}
+          onClick={() => { setActiveForm('add'); resetState(); }}
+        >
+          Add Book
+        </button>
+        <button
+          className={activeForm === 'edit' ? 'active' : ''}
+          onClick={() => { setActiveForm('edit'); resetState(); }}
+        >
+          Edit Book
+        </button>
       </div>
+
+      {error && <div className="error">{error}</div>}
+      {message && <div className="message">{message}</div>}
 
       <div className="book-content">
-        {action === 'add' && (
-          <BookAddForm onSubmit={handleAdd} />
+        {activeForm === 'add' ? (
+          <BookAddForm onSubmit={handleAddBook} />
+        ) : (
+          <BookEditForm onSubmit={handleUpdate} onAddCopy={handleAddCopy} />
         )}
-
-        {action === 'edit' && (
-          <BookEditForm onSubmit={handleUpdate}/>
-        )}
-
       </div>
-      {message && <div className="message">{message}</div>}
     </div>
   );
 }

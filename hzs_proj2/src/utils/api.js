@@ -162,12 +162,14 @@ export const addRental = async (rentalData) => {
     body: JSON.stringify(rentalData),
   });
 
+  const data = await response.json();
+
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || '创建租借记录失败');
+    const errorMessage = data.detail || data.message || 'Failed to create rental';
+    throw new Error(errorMessage);
   }
 
-  return response.json();
+  return data;
 };
 
 export const getRentalById = async (rentalId) => {
