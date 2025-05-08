@@ -14,7 +14,7 @@ def create_invitation(
     sql = """
       INSERT INTO hzs_seminar_access (event_id, invitee_name, invitee_email, invited_at)
       VALUES (%s, %s, %s, %s)
-      RETURNING invitation_id, event_id, invitee_name, invitee_email, invited_at
+      RETURNING invitation_id,  event_id, invitee_name, invitee_email, invited_at
     """
     db.execute(sql, (event_id, data.invitee_name, data.invitee_email, data.invited_at))
     inv = db.fetchone()

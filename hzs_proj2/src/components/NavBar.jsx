@@ -22,6 +22,18 @@ export default function NavBar() {
         <NavLink to="/rentals" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
           Rental
         </NavLink>
+        <NavLink to="/exhibitions" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          Exhibitions
+        </NavLink>
+        <NavLink to="/seminars" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          Seminars
+        </NavLink>
+        <NavLink to="/my-registrations" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          My Registrations
+        </NavLink>
+        <NavLink to="/my-invitations" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          My Invitations
+        </NavLink>
       </div>
     </nav>
   );
