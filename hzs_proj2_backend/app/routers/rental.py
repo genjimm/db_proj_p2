@@ -111,45 +111,51 @@ async def get_rental_by_id(rental_id: int, db=Depends(database.get_db)):
 
 
 @router.put("/{rental_id}/return", response_model=schemas.RentalOut)
-async def return_rental(rental_id: int, return_date: schemas.RentalReturn, db=Depends(database.get_db)):
+async def return_rental(
+    rental_id: int,
+    rental_return: schemas.RentalReturn,
+    db=Depends(database.get_db),
+):
     try:
         db.execute(GET_RENTAL_BY_ID_QUERY, (rental_id,))
         rental = db.fetchone()
-
         if not rental:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Rental with id {rental_id} does not exist!"
-            )
-        
-        is_late = return_date > rental['expected_return_date']
+            raise HTTPException(status_code=404, detail="Rental not found")
+
+        # 1. 取字段
+        actual = rental_return.actual_return_date
+        expected = rental["expected_return_date"]
+
+        # 2. 统一成 naive（或都转 UTC-aware，看你业务需求）
+        if actual.tzinfo is not None:
+            actual = actual.replace(tzinfo=None)
+        if expected.tzinfo is not None:
+            expected = expected.replace(tzinfo=None)
+
+        # 3. 比较
+        is_late = actual > expected
         if is_late:
-            db.execute(UPDATE_LATE_RENTAL_RETURN_DATE_QUERY, (return_date.actual_return_date, rental_id))
-            updated_rental = db.fetchone()
+            db.execute(UPDATE_LATE_RENTAL_RETURN_DATE_QUERY, (actual, rental_id))
         else:
-            # Update the rental with the actual return date
-            db.execute(UPDATE_RENTAL_RETURN_DATE_QUERY, (return_date.actual_return_date, rental_id))
-            updated_rental = db.fetchone()
+            db.execute(UPDATE_RENTAL_RETURN_DATE_QUERY, (actual, rental_id))
 
-        if not updated_rental:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Rental with id {rental_id} does not exist!"
-            )
+        updated = db.fetchone()
+        if not updated:
+            raise HTTPException(status_code=404, detail="Rental not found")
 
-        # Update the book copy status to 'AVAILABLE'
-        db.execute(UPDATE_BOOK_COPY_STATUS_QUERY, ('AVAILABLE', updated_rental['copy_id']))
+        # 4. 标记可借
+        db.execute(UPDATE_BOOK_COPY_STATUS_QUERY, ("AVAILABLE", updated["copy_id"]))
         db.connection.commit()
+        return updated
 
-        logger.info(f"Rental returned successfully: {updated_rental}")
-        return updated_rental
+    except HTTPException:
+        db.connection.rollback()
+        raise
     except Exception as e:
         db.connection.rollback()
-        logger.error(f"Error returning rental: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="An error occurred while returning the rental."
-        )
+        logger.error(f"Error returning rental: {e}")
+        raise HTTPException(status_code=500, detail="An error occurred while returning the rental.")
+
 
 
 @router.get("/customer/{customer_id}", response_model=List[schemas.RentalOut])
