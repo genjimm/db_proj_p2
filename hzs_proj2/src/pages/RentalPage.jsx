@@ -16,7 +16,12 @@ export default function RentalPage() {
   const handleAdd = async (rentalData) => {
     try {
       const newRental = await addRental(rentalData);
-      setMessage(`Rental ${newRental.rental_id} created successfully.`);
+      if (newRental && newRental.rental_id) {
+        console.log('租借记录创建成功，ID:', newRental.rental_id);
+        setMessage(`Rental ${newRental.rental_id} created successfully.`);
+      } else {
+        setMessage('Rental creation failed: No rental_id found in response');
+      }
     } catch (err) {
       setMessage(`Failed to create rental: ${err.message}`);
     }
@@ -46,7 +51,6 @@ export default function RentalPage() {
           <RentalList />
         )}
       </div>
-      {message && <div className="message">{message}</div>}
     </div>
   );
 }

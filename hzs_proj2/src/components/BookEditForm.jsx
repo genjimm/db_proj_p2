@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { getBookById, updateBook, deleteBook, getBookCopies } from '../utils/api';
+import { getBookById, updateBook, deleteBook, getBookCopies, getBookAuthors } from '../utils/api';
 import BookCopyList from './BookCopyList';
 
 function BookEditForm({ onAddCopy }) {
   const [bookId, setBookId] = useState('');
   const [bookData, setBookData] = useState(null);
   const [copies, setCopies] = useState([]);
+  const [authors, setAuthors] = useState([]);
   const [formData, setFormData] = useState({ b_name: '', topic: '' });
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
@@ -21,6 +22,10 @@ function BookEditForm({ onAddCopy }) {
       // Fetch book copies
       const copiesData = await getBookCopies(bookId);
       setCopies(copiesData);
+
+      // Fetch book authors
+      const authorsData = await getBookAuthors(bookId);
+      setAuthors(authorsData);
       
       setMessage('');
       setError('');
@@ -28,6 +33,7 @@ function BookEditForm({ onAddCopy }) {
       setError(`Failed to fetch book: ${err.message}`);
       setBookData(null);
       setCopies([]);
+      setAuthors([]);
     }
   };
 
@@ -54,6 +60,7 @@ function BookEditForm({ onAddCopy }) {
       setBookData(null);
       setFormData({ b_name: '', topic: '' });
       setCopies([]);
+      setAuthors([]);
       setError('');
     } catch (err) {
       setError(`Failed to delete book: ${err.message}`);
@@ -120,6 +127,23 @@ function BookEditForm({ onAddCopy }) {
               <button onClick={handleAddCopy} className="add-copy-button">Add Copy</button>
             </div>
           </div>
+
+          {/* Display Authors */}
+          <div className="authors-section">
+            <h3>Book Authors</h3>
+            {authors.length > 0 ? (
+              <ul className="authors-list">
+                {authors.map(author => (
+                  <li key={author.author_id}>
+                    {author.f_name} {author.l_name} (ID: {author.author_id})
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No authors found for this book.</p>
+            )}
+          </div>
+
           <BookCopyList copies={copies} />
         </>
       )}
