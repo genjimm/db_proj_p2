@@ -24,6 +24,12 @@ ALTER TABLE hzs_author ALTER COLUMN author_id SET DEFAULT nextval('hzs_author_id
 CREATE SEQUENCE hzs_sponsor_id_seq START WITH 1 INCREMENT BY 1;
 ALTER TABLE hzs_sponsor ALTER COLUMN sponsor_id SET DEFAULT nextval('hzs_sponsor_id_seq');
 
+CREATE SEQUENCE hzs_event_id_seq
+  START WITH 1
+  INCREMENT BY 1;
+ALTER TABLE hzs_event
+  ALTER COLUMN event_id
+    SET DEFAULT nextval('hzs_event_id_seq');
 -- ����constraints
 
 ALTER TABLE HZS_CUSTOMER

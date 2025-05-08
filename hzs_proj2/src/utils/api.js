@@ -124,8 +124,20 @@ export function getBookCopies(bookId) {
   return getJson(`/book/${bookId}/copies`);
 }
 
-export function addAuthorToBook(bookId, authorData) {
-  return postJson(`/book/${bookId}/authors`, authorData);
+export function addAuthorToBook(bookId, authorId) {
+  return fetch(`${BASE_URL}/book/${bookId}/authors?author_id=${authorId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  }).then(response => {
+    if (!response.ok) {
+      return response.json().then(err => {
+        throw new Error(err.detail || 'Failed to add author to book');
+      });
+    }
+    return response.json();
+  });
 }
 
 export function getBookAuthors(bookId) {
@@ -152,23 +164,26 @@ export function deleteAuthor(authorId) {
   return deleteReq(`/author/${authorId}`);
 }
 
-// 租借相关 API
-export const addRental = async (rentalData) => {
-  const response = await fetch(`${BASE_URL}/rental/`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(rentalData),
-  });
+export async function addRental(rentalData) {
+  try {
+    const response = await fetch(`${BASE_URL}/rental/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(rentalData),
+    });
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || '创建租借记录失败');
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(`${response.status}: ${data.detail || '创建租借记录失败'}`);
+    }
+
+    return data;
+  } catch (error) {
+    console.error('创建租借记录错误:', error);
+    throw error;
   }
-
-  return response.json();
-};
+}
 
 export const getRentalById = async (rentalId) => {
   const response = await fetch(`${BASE_URL}/rental/${rentalId}`);
@@ -182,16 +197,40 @@ export const getRentalById = async (rentalId) => {
 };
 
 export const returnRental = async (rentalId) => {
-  const response = await fetch(`${BASE_URL}/rental/${rentalId}/return`, {
-    method: 'PUT',
-  });
+  try {
+    // 获取当前时间作为归还时间
+    const actualReturnDate = new Date().toISOString();
+    
+    console.log('归还图书数据:', {
+      rentalId,
+      actualReturnDate
+    });
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || '归还图书失败');
+    const response = await fetch(`${BASE_URL}/rental/${rentalId}/return`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        actual_return_date: actualReturnDate
+      })
+    });
+
+    console.log('服务器响应状态:', response.status);
+    console.log('服务器响应头:', Object.fromEntries(response.headers.entries()));
+
+    const data = await response.json();
+    console.log('服务器返回的数据:', data);
+
+    if (!response.ok) {
+      throw new Error(data.detail || '归还图书失败');
+    }
+
+    return data;
+  } catch (error) {
+    console.error('归还图书错误:', error);
+    throw new Error(error.message || '归还图书失败');
   }
-
-  return response.json();
 };
 
 export const getRentalsByCustomer = async (customerId) => {
