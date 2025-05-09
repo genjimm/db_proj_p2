@@ -30,6 +30,12 @@ CREATE SEQUENCE hzs_event_id_seq
 ALTER TABLE hzs_event
   ALTER COLUMN event_id
     SET DEFAULT nextval('hzs_event_id_seq');
+    
+CREATE SEQUENCE hzs_exhibition_access_id_seq START WITH 1 INCREMENT BY 1;
+ALTER TABLE hzs_exhibition_access ALTER COLUMN registration_id SET DEFAULT nextval('hzs_exhibition_access_id_seq');
+
+CREATE SEQUENCE hzs_seminar_access_id_seq START WITH 1 INCREMENT BY 1;
+ALTER TABLE hzs_seminar_access ALTER COLUMN invitation_id SET DEFAULT nextval('hzs_seminar_access_id_seq');
 -- ����constraints
 
 ALTER TABLE HZS_CUSTOMER
@@ -89,3 +95,15 @@ CHECK (AMOUNT >= 0);
 ALTER TABLE HZS_STUDY_ROOM 
 ADD CONSTRAINT C_POSITIVE_CAPACITY 
 CHECK (CAPACITY > 0);
+
+ALTER TABLE hzs_exhibition_access
+  ADD COLUMN registrant_name  VARCHAR(255)                NOT NULL,
+  ADD COLUMN registrant_email VARCHAR(255)                NOT NULL,
+  ADD COLUMN registered_at    TIMESTAMP WITH TIME ZONE    NOT NULL
+    DEFAULT NOW();
+
+ALTER TABLE hzs_seminar_access
+  ADD COLUMN invitee_name  VARCHAR(255)                NOT NULL,
+  ADD COLUMN invitee_email VARCHAR(255)                NOT NULL,
+  ADD COLUMN invited_at    TIMESTAMP WITH TIME ZONE    NOT NULL
+    DEFAULT NOW();

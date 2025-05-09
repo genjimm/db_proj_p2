@@ -1,5 +1,8 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
+import { Navbar, Nav, Container } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import HomePage from './pages/HomePage';
@@ -8,6 +11,12 @@ import NavBar from './components/NavBar';
 import BookPage from './pages/BookPage';
 import AuthorPage from './pages/AuthorPage';
 import RentalPage from './pages/RentalPage';
+import Exhibitions from './pages/Exhibitions';
+import ExhibitionDetail from './pages/ExhibitionDetail';
+import Seminars from './pages/Seminars';
+import SeminarDetail from './pages/SeminarDetail';
+import MyRegistrations from './pages/MyRegistrations';
+import MyInvitations from './pages/MyInvitations';
 
 function Main() {
   const { pathname } = useLocation();
@@ -21,6 +30,15 @@ function Main() {
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        
+        <Route
+          path="/home"
+          element={
+            <ProtectRoute>
+              <HomePage />
+            </ProtectRoute>
+          }
+        />
         
         <Route
           path="/books"
@@ -49,15 +67,74 @@ function Main() {
           }
         />
         
+        <Route
+          path="/exhibitions"
+          element={
+            <ProtectRoute>
+              <Exhibitions />
+            </ProtectRoute>
+          }
+        />
+        
+        <Route
+          path="/exhibitions/:event_id"
+          element={
+            <ProtectRoute>
+              <ExhibitionDetail />
+            </ProtectRoute>
+          }
+        />
+        
+        <Route
+          path="/seminars"
+          element={
+            <ProtectRoute>
+              <Seminars />
+            </ProtectRoute>
+          }
+        />
+        
+        <Route
+          path="/seminars/:event_id"
+          element={
+            <ProtectRoute>
+              <SeminarDetail />
+            </ProtectRoute>
+          }
+        />
+        
+        <Route
+          path="/my-registrations"
+          element={
+            <ProtectRoute>
+              <MyRegistrations />
+            </ProtectRoute>
+          }
+        />
+        
+        <Route
+          path="/my-invitations"
+          element={
+            <ProtectRoute>
+              <MyInvitations />
+            </ProtectRoute>
+          }
+        />
+        
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </>
   );
 }
-export default function App() {
+
+function App() {
   return (
-    <BrowserRouter>
-      <Main />
-    </BrowserRouter>
+    <Router>
+      <div className="App">
+        <Main />
+      </div>
+    </Router>
   );
 }
+
+export default App;
