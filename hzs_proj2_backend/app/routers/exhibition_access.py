@@ -16,7 +16,7 @@ def register_exhibition(
       VALUES (%s, %s, %s, %s)
       RETURNING registration_id, event_id, registrant_name, registrant_email, registered_at
     """
-    db.execute(sql, (event_id, data.registrant_name, data.registrant_email, data.registered_at))
+    db.execute(sql, (event_id,  data.registrant_name, data.registrant_email, data.registered_at))
     reg = db.fetchone()
     if not reg:
         raise HTTPException(500, "创建报名失败")

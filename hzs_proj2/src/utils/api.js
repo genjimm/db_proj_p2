@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const BASE_URL = 'http://127.0.0.1:8000';
 
 async function postJson(path, data) {
@@ -67,7 +69,7 @@ export async function login(username, password) {
   let response;
   try {
     // fetch后端
-    response = await fetch('http://127.0.0.1:8000/login', {
+    response = await fetch(`${BASE_URL}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: form
@@ -204,3 +206,45 @@ export const getRentalsByCustomer = async (customerId) => {
 
   return response.json();
 };
+
+// 创建axios实例用于新的API
+const api = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// 添加请求拦截器，在每个请求中添加token
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// 展览相关API
+export const getExhibitions = () => api.get('/exhibitions');
+export const getExhibition = (id) => api.get(`/exhibitions/${id}`);
+export const registerExhibition = (eventId, data) => 
+  api.post(`/exhibitions/${eventId}/registrations`, data);
+
+// 研讨会相关API
+export const getSeminars = () => api.get('/seminars');
+export const getSeminar = (id) => api.get(`/seminars/${id}`);
+export const createInvitation = (eventId, data) => 
+  api.post(`/seminars/${eventId}/invitations`, data);
+
+// 获取用户报名的活动
+export const getMyRegistrations = (eventId) => 
+  api.get(`/exhibitions/${eventId}/registrations`);
+export const getMyInvitations = (eventId) => 
+  api.get(`/seminars/${eventId}/invitations`);
+
+export default api;

@@ -91,7 +91,7 @@ class EventBase(BaseModel):
     stop_datetime:  datetime  = Field(..., description="结束时间")
     
 class EventOut(EventBase):
-    event_id:   int
+    event_id: int = Field(..., alias="event_id")
     event_type: Literal["Exhibition","Seminar"]
     created_at: datetime
     class Config:
@@ -101,6 +101,7 @@ class ExhibitionCreate(EventBase):
     expense: float = Field(..., ge=0, description="展览费用")
 
 class ExhibitionOut(ExhibitionCreate):
+    event_id: int
     expense: float
 
     
@@ -129,6 +130,7 @@ class SeminarCreate(EventBase):
     descrip: str   = Field(..., description="研讨会说明")
 
 class SeminarOut(SeminarCreate):
+    event_id: int
     descrip: str
 
 
@@ -176,9 +178,16 @@ class InvitationCreate(BaseModel):
     invitee_email: str
     invited_at: datetime
 
+
 class InvitationOut(InvitationCreate):
     invitation_id: int
     event_id: int
+    invitee_name: str
+    invitee_email: str
+    invited_at: datetime
+
+    class Config:
+        orm_mode = True
 
 # —— Exhibition 报名表 —— 
 class RegistrationCreate(BaseModel):
@@ -186,7 +195,14 @@ class RegistrationCreate(BaseModel):
     registrant_email: str
     registered_at: datetime
 
+
 class RegistrationOut(RegistrationCreate):
     registration_id: int
     event_id: int
+    registrant_name: str
+    registrant_email: str
+    registered_at: datetime
+
+    class Config:
+        orm_mode = True
 
