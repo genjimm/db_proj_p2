@@ -3,6 +3,10 @@ from .. import schemas, database
 from typing import List
 import logging
 
+logging.basicConfig(
+    level=logging.DEBUG,  # Set to DEBUG to capture all logs
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
 logger = logging.getLogger(__name__)
 
 router = APIRouter(
@@ -53,10 +57,16 @@ UPDATE_BOOK_COPY_STATUS_QUERY = """
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.RentalOut)
 async def create_rental(rental: schemas.RentalCreate, db=Depends(database.get_db)):
+    logger.info(f"Received request to create rental: {rental}")
     try:
+
         # Check if the book copy is available
-        db.execute("SELECT status FROM hzs_book_copy WHERE copy_id = %s", (rental.copy_id,))
+        # prevent race conditions
+        db.execute("SELECT status FROM hzs_book_copy WHERE copy_id = %s FOR UPDATE", (rental.copy_id,))
         book_copy = db.fetchone()
+        logger.debug(f"Checking book copy status for copy_id: {rental.copy_id}")
+        logger.debug(f"Book copy status: {book_copy}")
+        logger.debug(f"Creating rental with data: {rental}")
         if not book_copy or book_copy['status'] != 'AVAILABLE':
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,

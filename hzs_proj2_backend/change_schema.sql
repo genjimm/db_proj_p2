@@ -26,6 +26,10 @@ ALTER TABLE hzs_sponsor ALTER COLUMN sponsor_id SET DEFAULT nextval('hzs_sponsor
 
 -- ����constraints
 
+ALTER TABLE hzs_rental
+ADD CONSTRAINT unique_rental UNIQUE (copy_id, rental_status)
+WHERE rental_status IN ('BORROWED', 'LATE', 'RETURNED');
+
 ALTER TABLE HZS_CUSTOMER
 ADD CONSTRAINT CK_CUSTOMER_ID_TYPE
 CHECK (ID_TYPE IN ('Passport', 'SSN', 'Driver_License'));
