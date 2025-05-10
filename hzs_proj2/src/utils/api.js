@@ -1,11 +1,17 @@
 import axios from 'axios';
+import { jwtDecode } from "jwt-decode";
 
 const BASE_URL = 'http://127.0.0.1:8000';
 
 async function postJson(path, data) {
+  const token = localStorage.getItem('token'); // Retrieve the token
+  console.log('Token:', token);
   const response = await fetch(`${BASE_URL}${path}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`, // Include the token
+    },
     body: JSON.stringify(data),
   });
   const json = await response.json();
@@ -17,9 +23,13 @@ async function postJson(path, data) {
 }
 
 async function getJson(path) {
+  const token = localStorage.getItem('token'); // Retrieve the token
   const response = await fetch(`${BASE_URL}${path}`, {
     method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`, // Include the token
+    },
   });
   const json = await response.json();
   if (!response.ok) {
@@ -97,7 +107,11 @@ export async function login(username, password) {
   const token = body.access_token || body.token;
   if (token) {
     localStorage.setItem('token', token);
+    const decodeToken = jwtDecode(token);
+    console.log('Decoded Token:', decodeToken);
+    localStorage.setItem('role', decodeToken.role);
   }
+
   // return 内容
   return body;
 }

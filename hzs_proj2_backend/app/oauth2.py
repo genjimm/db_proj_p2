@@ -4,6 +4,13 @@ from . import database, schemas
 from fastapi import Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from .config import settings
+import logging
+
+logging.basicConfig(
+    level=logging.DEBUG,  # Set to DEBUG to capture all logs
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
 
@@ -22,11 +29,14 @@ def create_access_token(data: dict):
 def verify_access_token(token: str, credentials_exception):
     try:
         payload = jwt.decode(token, SECRET_KEY, [ALGORITHM])
-        id: int = payload.get("customer_id")
-        if id is None:
+        # logger.info(f"Decoded token payload: {payload}")  # Debugging log
+        id: int = payload.get("user_id")
+        role: str = payload.get("role")
+        if id is None or role is None:
             raise credentials_exception
-        token_data = schemas.TokenData(id=id)  # Validate token data using Pydantic
-    except JWTError:
+        token_data = schemas.TokenData(id=id, role=role)
+    except JWTError as e:
+        logger.error(f"JWT Error: {str(e)}")  # Log the error
         raise credentials_exception
     
     return token_data
@@ -42,13 +52,14 @@ def get_current_user(token: str = Depends(oauth2_scheme), db=Depends(database.ge
     token_data = verify_access_token(token, credentials_exception)
 
     # Query the user from the database
-    db.execute("""SELECT * FROM hzs_customer WHERE id = %s""", (token_data.id,))
+    db.execute("""SELECT * FROM hzs_customer WHERE customer_id = %s""", (token_data.id,))
     user = db.fetchone()
 
     if not user:
         raise credentials_exception
 
-    return user
+    logger.info(f"Current user: {user}")
+    return {"user_id": user['customer_id'], "role": user['role']}
 
 
 

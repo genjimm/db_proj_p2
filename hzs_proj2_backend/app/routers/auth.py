@@ -17,6 +17,7 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db=Depends(da
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Invalid Credentials"
         )
+    
 
     # Verify the password
     if not utils.verify(user_credentials.password, user['password']):
@@ -28,7 +29,12 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db=Depends(da
     customer_id = int(user['customer_id'])
 
     # Create an access token
-    access_token = oauth2.create_access_token(data={"user_id": customer_id})
+    access_token = oauth2.create_access_token(data={"user_id": customer_id, "role": user['role']})
 
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {
+        "access_token": access_token, 
+        "token_type": "bearer",
+        "f_name": user['f_name'],
+        "l_name": user['l_name']
+    }
     

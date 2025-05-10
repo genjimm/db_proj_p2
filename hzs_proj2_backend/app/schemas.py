@@ -17,6 +17,7 @@ class CustomerBase(BaseModel):
     
 class CustomerCreate(CustomerBase):
     password: str
+    role: str = "user"
     
 
 class CustomerOut(CustomerBase):
@@ -33,9 +34,12 @@ class CustomerLogin(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+    f_name: str
+    l_name: str
 
 class TokenData(BaseModel):
     id: Optional[int] = None
+    role: str
 
 
 class BookBase(BaseModel):
