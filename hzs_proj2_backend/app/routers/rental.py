@@ -89,7 +89,11 @@ async def create_rental(rental: schemas.RentalCreate, db=Depends(database.get_db
 
         logger.info(f"Rental created successfully: {new_rental}")
         return new_rental
+    except HTTPException:
+        db.connection.rollback()
+        raise
     except Exception as e:
+        
         db.connection.rollback()
         logger.error(f"Error creating rental: {str(e)}")
         raise HTTPException(
