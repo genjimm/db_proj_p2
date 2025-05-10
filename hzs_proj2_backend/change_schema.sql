@@ -45,9 +45,14 @@ CREATE SEQUENCE hzs_seminar_access_id_seq START WITH 1 INCREMENT BY 1;
 ALTER TABLE hzs_seminar_access ALTER COLUMN invitation_id SET DEFAULT nextval('hzs_seminar_access_id_seq');
 -- ����constraints
 
+
+-- Add the UNIQUE constraint
 ALTER TABLE hzs_rental
-ADD CONSTRAINT unique_rental UNIQUE (copy_id, rental_status)
-WHERE rental_status IN ('BORROWED', 'LATE', 'RETURNED');
+ADD CONSTRAINT unique_rental UNIQUE (copy_id, rental_status);
+
+-- Add the CHECK constraint
+ALTER TABLE hzs_rental
+ADD CONSTRAINT check_rental_status CHECK (rental_status IN ('BORROWED', 'LATE', 'RETURNED'));
 
 ALTER TABLE HZS_CUSTOMER
 ADD CONSTRAINT CK_CUSTOMER_ID_TYPE
@@ -118,3 +123,7 @@ ALTER TABLE hzs_seminar_access
   ADD COLUMN invitee_email VARCHAR(255)                NOT NULL,
   ADD COLUMN invited_at    TIMESTAMP WITH TIME ZONE    NOT NULL
     DEFAULT NOW();
+
+
+ALTER TABLE hzs_customer
+ADD COLUMN role VARCHAR(20) NOT NULL DEFAULT 'user';

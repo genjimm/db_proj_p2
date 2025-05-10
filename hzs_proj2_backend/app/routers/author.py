@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from .. import schemas, database
+from ..oauth2 import get_current_user
 from typing import List
 import logging
 
@@ -52,7 +53,14 @@ GET_BOOKS_BY_AUTHOR_QUERY = """
 
 # Add a new author
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.AuthorOut)
-async def add_author(author: schemas.AuthorCreate, db=Depends(database.get_db)):
+async def add_author(author: schemas.AuthorCreate, db=Depends(database.get_db), current_user=Depends(get_current_user)):
+    if current_user['role'] != 'admin':
+        
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You do not have access to this resource"
+        )
+    
     try:
         db.execute(ADD_AUTHOR_QUERY, (
             author.f_name, author.l_name, author.email, author.state, author.country, author.street, author.city
