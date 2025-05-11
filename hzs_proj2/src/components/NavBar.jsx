@@ -64,6 +64,15 @@ export default function NavBar() {
         <NavLink to="/my-invitations" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
           My Invitations
         </NavLink>
+        <NavLink to="/myinvoice" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          My Invoices
+        </NavLink>
+        {role === 'admin' && (
+          <Nav.Link as={Link} to="/admin">Admin Panel</Nav.Link>
+        )}
+        <button onClick={handleLogout} className="nav-link logout-button">
+          Logout
+        </button>
       </div>
     </nav>
   );
