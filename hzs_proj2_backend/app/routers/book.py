@@ -1,8 +1,13 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from .. import schemas, database
+from ..oauth2 import get_current_user
 from typing import List
 import logging
 
+logging.basicConfig(
+    level=logging.DEBUG,  # Set to DEBUG to capture all logs
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
 logger = logging.getLogger(__name__)
 
 router = APIRouter(
@@ -61,7 +66,14 @@ GET_AUTHORS_BY_BOOK_QUERY = """
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.BookOut)
-async def add_book(book: schemas.BookCreate, db=Depends(database.get_db)):
+async def add_book(book: schemas.BookCreate, db=Depends(database.get_db), current_user=Depends(get_current_user)):
+    # logger.info(current_user['role'])
+    if current_user['role'] != 'admin':
+        
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You do not have access to this resource"
+        )
     try:
         db.execute(ADD_BOOK_QUERY, (book.b_name, book.topic))
         added_book = db.fetchone()
@@ -79,7 +91,13 @@ async def add_book(book: schemas.BookCreate, db=Depends(database.get_db)):
     return added_book
 
 @router.get("/{book_id}", response_model=schemas.BookOut)
-async def get_book_byid(book_id: int, db=Depends(database.get_db)):
+async def get_book_byid(book_id: int, db=Depends(database.get_db), current_user=Depends(get_current_user)):
+    if current_user['role'] != 'admin':
+        
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You do not have access to this resource"
+        )
     db.execute(GET_BOOK_BY_ID_QUERY, (book_id,))
     book = db.fetchone()
 
