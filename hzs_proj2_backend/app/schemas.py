@@ -89,14 +89,21 @@ class RentalOut(BaseModel):
 
 
 class EventBase(BaseModel):
-    e_name: str               = Field(..., description="事件名称")
-    topic:  str               = Field(..., description="主题")
-    start_datetime: datetime  = Field(..., description="开始时间")
-    stop_datetime:  datetime  = Field(..., description="结束时间")
-    
+    e_name: str
+    event_type: str
+    start_datetime: datetime
+    stop_datetime: datetime
+    topic: str
+
+class EventCreate(EventBase):
+    expense: Optional[float] = None
+    descrip: Optional[str] = None
+
+    class Config:
+        orm_mode = True
+
 class EventOut(EventBase):
     event_id: int = Field(..., alias="event_id")
-    event_type: Literal["Exhibition","Seminar"]
     created_at: datetime
     class Config:
         orm_mode = True
@@ -209,4 +216,9 @@ class RegistrationOut(RegistrationCreate):
 
     class Config:
         orm_mode = True
+
+class PaymentCreate(BaseModel):
+    method: str = Field(..., description="支付方式，如CASH、CREDIT、DEBIT、PAYPAL")
+    card_holder_l_name: str = Field(..., description="持卡人姓氏")
+    card_holder_f_name: str = Field(..., description="持卡人名字")
 

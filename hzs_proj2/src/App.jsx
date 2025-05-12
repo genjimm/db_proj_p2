@@ -18,6 +18,8 @@ import Seminars from './pages/Seminars';
 import SeminarDetail from './pages/SeminarDetail';
 import MyRegistrations from './pages/MyRegistrations';
 import MyInvitations from './pages/MyInvitations';
+import AdminPanel from './pages/AdminPanel';
+import MyInvoice from './pages/MyInvoice';
 
 function Main() {
   const { pathname } = useLocation();
@@ -118,6 +120,24 @@ function Main() {
           element={
             <ProtectRoute>
               <MyInvitations />
+            </ProtectRoute>
+          }
+        />
+        
+        <Route
+          path="/admin"
+          element={
+            <ProtectRoute>
+              <AdminPanel />
+            </ProtectRoute>
+          }
+        />
+        
+        <Route
+          path="/myinvoice"
+          element={
+            <ProtectRoute>
+              <MyInvoice />
             </ProtectRoute>
           }
         />

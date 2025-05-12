@@ -54,8 +54,13 @@ async function putJson(path, data) {
 }
 
 async function deleteReq(path) {
+  const token = localStorage.getItem('token');
   const response = await fetch(`${BASE_URL}${path}`, {
     method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
   });
   if (!response.ok) {
     let errMsg;
@@ -299,5 +304,35 @@ export const getMyRegistrations = (eventId) =>
   api.get(`/exhibitions/${eventId}/registrations`);
 export const getMyInvitations = (eventId) => 
   api.get(`/seminars/${eventId}/invitations`);
+
+export function createEvent(eventData) {
+  return postJson('/event/', eventData);
+}
+
+export function deleteEvent(eventId) {
+  return deleteReq(`/event/${eventId}`);
+}
+
+// 获取未支付账单
+export async function getUnpaidInvoices() {
+  const token = localStorage.getItem('token');
+  const res = await fetch('http://127.0.0.1:8000/invoices/unpaid', {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return await res.json();
+}
+
+// 支付账单
+export async function payInvoice(invoiceId, data) {
+  const token = localStorage.getItem('token');
+  const res = await fetch(`http://127.0.0.1:8000/invoices/pay/${invoiceId}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify(data)
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return await res.json();
+}
 
 export default api;

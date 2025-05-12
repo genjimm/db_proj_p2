@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import '../styles/NavBar.css';
+import { Link } from 'react-router-dom';
+import { Nav } from 'react-bootstrap';
 
 export default function NavBar() {
   const [userFullName, setUserFullName] = useState('Guest');
@@ -62,6 +64,12 @@ export default function NavBar() {
         <NavLink to="/my-invitations" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
           My Invitations
         </NavLink>
+        <NavLink to="/myinvoice" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          My Invoices
+        </NavLink>
+        {role === 'admin' && (
+          <Nav.Link as={Link} to="/admin">Admin Panel</Nav.Link>
+        )}
         <button onClick={handleLogout} className="nav-link logout-button">
           Logout
         </button>
