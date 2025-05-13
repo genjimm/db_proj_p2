@@ -130,7 +130,18 @@ export function addBook(book) {
 }
 
 export function deleteBook(bookId) {
-  return deleteReq(`/book/${bookId}`);
+  return fetch(`${BASE_URL}/book/${bookId}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  }).then(response => {
+    if (!response.ok) {
+      return response.json().then(err => {
+        throw new Error(err.detail || 'Failed to delete book');
+      });
+    }
+  });
 }
 
 export function updateBook(bookId, bookData) {
@@ -167,6 +178,10 @@ export function getBookAuthors(bookId) {
 
 export function getBookById(bookId) {
   return getJson(`/book/${bookId}`);
+}
+
+export function getAllBooks() {
+  return getJson('/book/');
 }
 
 export function addAuthor(author) {
@@ -219,7 +234,6 @@ export const getRentalById = async (rentalId) => {
 
 export const returnRental = async (rentalId) => {
   try {
-    // 获取当前时间作为归还时间
     const actualReturnDate = new Date().toISOString();
     
     console.log('归还图书数据:', {
@@ -335,4 +349,71 @@ export async function payInvoice(invoiceId, data) {
   return await res.json();
 }
 
+export function deleteBookCopy(bookId, copyId) {
+  return fetch(`${BASE_URL}/book/${bookId}/copy/${copyId}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  }).then(response => {
+    if (!response.ok) {
+      return response.json().then(err => {
+        throw new Error(err.detail || 'Failed to delete book copy');
+      });
+    }
+  });
+}
+
 export default api;
+
+// Study Room API functions
+export const getAllRooms = async () => {
+    try {
+        const response = await getJson('/study-room/');
+        return response;
+    } catch (error) {
+        console.error('Error fetching rooms:', error);
+        throw error;
+    }
+};
+
+export const getRoomById = async (roomId) => {
+    try {
+        const response = await getJson(`/study-room/${roomId}`);
+        return response;
+    } catch (error) {
+        console.error('Error fetching room:', error);
+        throw error;
+    }
+};
+
+export const getRoomReservations = async (roomId, date) => {
+    try {
+        const response = await getJson(`/study-room/${roomId}/reservations?date=${date}`);
+        return response;
+    } catch (error) {
+        console.error('Error fetching room reservations:', error);
+        throw error;
+    }
+};
+
+export const createReservation = async (reservationData) => {
+    try {
+        const response = await postJson('/study-room/reservation', reservationData);
+        return response;
+    } catch (error) {
+        console.error('Error creating reservation:', error);
+        throw error;
+    }
+};
+
+export const getMyReservations = async () => {
+    try {
+        const response = await getJson('/study-room/my-reservations');
+        console.log('Reservations response:', response);  // Add logging
+        return response;
+    } catch (error) {
+        console.error('Error fetching reservations:', error);
+        throw error;
+    }
+};
