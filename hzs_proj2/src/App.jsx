@@ -20,6 +20,7 @@ import MyRegistrations from './pages/MyRegistrations';
 import MyInvitations from './pages/MyInvitations';
 import AdminPanel from './pages/AdminPanel';
 import MyInvoice from './pages/MyInvoice';
+import StudyRoomPage from './pages/StudyRoomPage';
 
 function Main() {
   const { pathname } = useLocation();
@@ -138,6 +139,15 @@ function Main() {
           element={
             <ProtectRoute>
               <MyInvoice />
+            </ProtectRoute>
+          }
+        />
+        
+        <Route
+          path="/study-room"
+          element={
+            <ProtectRoute>
+              <StudyRoomPage />
             </ProtectRoute>
           }
         />

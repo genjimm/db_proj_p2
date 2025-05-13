@@ -3,10 +3,11 @@ import '../styles/BookPage.css';
 import BookAddForm from '../components/BookAddForm';
 import BookEditForm from '../components/BookEditForm';
 import BookCopyList from '../components/BookCopyList';
+import BookInventory from '../components/BookInventory';
 import { addBook, updateBook, deleteBook, addBookCopy, addAuthorToBook } from '../utils/api';
 
 export default function BookPage() {
-  const [activeForm, setActiveForm] = useState('add');
+  const [activeForm, setActiveForm] = useState('inventory');
   const [editData, setEditData] = useState(null);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -24,6 +25,7 @@ export default function BookPage() {
       const newBook = await addBook(bookData);
       setMessage(`Book ${newBook.book_id} added successfully.`);
       setError('');
+      setActiveForm('inventory'); // Switch to inventory view after adding
     } catch (err) {
       setError(`Failed to add book: ${err.message}`);
     }
@@ -48,7 +50,7 @@ export default function BookPage() {
     try {
       const updated = await updateBook(editData.book_id, bookData);
       setMessage(`Book ${updated.book_id} updated successfully.`);
-      setActiveForm('add');
+      setActiveForm('inventory'); // Switch to inventory view after updating
       setEditData(null);
     } catch (err) {
       setMessage(`Failed to update book: ${err.message}`);
@@ -61,6 +63,7 @@ export default function BookPage() {
     try {
       await deleteBook(bookId);
       setMessage(`Book ${bookId} deleted.`);
+      setActiveForm('inventory'); // Switch to inventory view after deleting
     } catch (err) {
       setMessage(`Failed to delete book: ${err.message}`);
     }
@@ -108,6 +111,12 @@ export default function BookPage() {
       <h2>Book Management</h2>
       <div className="book-actions">
         <button
+          className={activeForm === 'inventory' ? 'active' : ''}
+          onClick={() => { setActiveForm('inventory'); resetState(); }}
+        >
+          View Inventory
+        </button>
+        <button
           className={activeForm === 'add' ? 'active' : ''}
           onClick={() => { setActiveForm('add'); resetState(); }}
         >
@@ -131,6 +140,7 @@ export default function BookPage() {
       {message && <div className="message">{message}</div>}
 
       <div className="book-content">
+        {activeForm === 'inventory' && <BookInventory />}
         {activeForm === 'add' && (
           <BookAddForm onSubmit={handleAddBook} />
         )}

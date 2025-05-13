@@ -5,29 +5,29 @@ import '../styles/LoginAndRegister.css';
 import { login } from '../utils/api';
 
 export default function LoginPage() {
-  const [username, setUsername] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const location = useLocation();
-  const from = location.state?.from?.pathname || '/books';
-  const navigate = useNavigate();
+const [username, setUsername] = React.useState('');
+const [password, setPassword] = React.useState('');
+const location = useLocation();
+const from = location.state?.from?.pathname || '/books';
+const navigate = useNavigate();
 
-  const handleLogin = async () => {
-    try {
-      const data = await login(username, password);
-      console.log('Login success:', data);
+const handleLogin = async () => {
+  try {
+    const data = await login(username, password);
+    console.log('Login success:', data);
       
       // Store user's full name
-      if (data.f_name && data.l_name) {
-        localStorage.setItem('userFullName', `${data.f_name} ${data.l_name}`);
-      }
+    if (data.f_name && data.l_name) {
+      localStorage.setItem('userFullName', `${data.f_name} ${data.l_name}`);
+    }
       
       // Navigate to the intended destination or default to books page
       navigate(from);
-    } catch (err) {
-      console.error('Login error:', err);
-      alert(err.message);
-    }
-  };
+  } catch (err) {
+    console.error('Login error:', err);
+    alert(err.message);
+  }
+};
 
   return (
     <div className="login-container">

@@ -67,6 +67,9 @@ export default function NavBar() {
         <NavLink to="/myinvoice" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
           My Invoices
         </NavLink>
+        <NavLink to="/study-room" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          Study Room
+        </NavLink>
         {role === 'admin' && (
           <Nav.Link as={Link} to="/admin">Admin Panel</Nav.Link>
         )}
