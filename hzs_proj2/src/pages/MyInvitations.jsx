@@ -12,11 +12,11 @@ const MyInvitations = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 获取所有研讨会
+        // Get all seminars
         const seminarsResponse = await getSeminars();
         setSeminars(seminarsResponse.data);
 
-        // 获取每个研讨会的邀请信息
+        // Get invitation information for each seminar
         const invitationsData = {};
         for (const seminar of seminarsResponse.data) {
           try {

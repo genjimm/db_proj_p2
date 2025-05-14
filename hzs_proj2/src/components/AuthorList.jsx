@@ -1,38 +1,38 @@
 import React, { useState } from 'react';
-import './AuthorList.css';  // 引入样式文件
+import './AuthorList.css';  // Import style file
 
 function AuthorList({ authors, bookId, onAuthorAdded }) {
-  const [newAuthorId, setNewAuthorId] = useState('');  // 用于存储待添加的作者ID输入值
+  const [newAuthorId, setNewAuthorId] = useState('');  // Store the input value for new author ID
 
-  // 处理添加作者操作
+  // Handle adding author operation
   const handleAddAuthor = async () => {
-    if (!newAuthorId) return;  // 若输入为空则不执行
+    if (!newAuthorId) return;  // If input is empty, do not execute
     try {
-      // 调用添加作者的 API（POST 请求）
+      // Call the add author API (POST request)
       const res = await fetch(`/book/${bookId}/authors`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ authorId: newAuthorId })  // 将作者ID作为JSON发送
+        body: JSON.stringify({ authorId: newAuthorId })  // Send author ID as JSON
       });
       if (res.ok) {
-        // 添加成功后清空输入框
+        // Clear input field after successful addition
         setNewAuthorId('');
-        // 通知父组件刷新作者列表
+        // Notify parent component to refresh author list
         if (onAuthorAdded) {
           onAuthorAdded();
         }
       } else {
-        console.error('添加作者失败，状态码：', res.status);
+        console.error('Failed to add author, status code:', res.status);
       }
     } catch (error) {
-      console.error('添加作者请求失败:', error);
+      console.error('Failed to add author request:', error);
     }
   };
 
   return (
     <div className="author-list">
-      <h3>作者列表</h3>
-      {/* 作者名列表，如果没有作者则显示提示 */}
+      <h3>Author List</h3>
+      {/* Author name list, show prompt if no authors */}
       {authors.length > 0 ? (
         <ul>
           {authors.map(author => (
@@ -40,17 +40,17 @@ function AuthorList({ authors, bookId, onAuthorAdded }) {
           ))}
         </ul>
       ) : (
-        <p>暂无作者信息</p>
+        <p>No author information available</p>
       )}
-      {/* 添加作者输入框和按钮 */}
+      {/* Add author input field and button */}
       <div className="add-author">
         <input 
           type="text" 
-          placeholder="输入作者ID" 
+          placeholder="Enter Author ID" 
           value={newAuthorId}
-          onChange={e => setNewAuthorId(e.target.value)}  // 更新输入值状态
+          onChange={e => setNewAuthorId(e.target.value)}  // Update input value state
         />
-        <button onClick={handleAddAuthor}>添加作者</button>
+        <button onClick={handleAddAuthor}>Add Author</button>
       </div>
     </div>
   );

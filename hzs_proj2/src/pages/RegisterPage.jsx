@@ -5,8 +5,8 @@ import { register } from '../utils/api';
 
 const allowedIdTypes = ['Passport', 'SSN', 'DriverLicense'];
 const emailRegex    = /@/;
-const nameRegex     = /^[^\d]+$/;  // 不含数字
-const phoneRegex    = /^\+?\d{7,15}$/; //7到15
+const nameRegex     = /^[^\d]+$/; 
+const phoneRegex    = /^\+?\d{7,15}$/; 
 
 export default function RegisterPage() {
   const [lName, setLName] = useState('');

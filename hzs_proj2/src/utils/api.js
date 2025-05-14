@@ -4,13 +4,13 @@ import { jwtDecode } from "jwt-decode";
 const BASE_URL = 'http://127.0.0.1:8000';
 
 async function postJson(path, data) {
-  const token = localStorage.getItem('token'); // Retrieve the token
+  const token = localStorage.getItem('token');
   console.log('Token:', token);
   const response = await fetch(`${BASE_URL}${path}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`, // Include the token
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(data),
   });
@@ -23,12 +23,12 @@ async function postJson(path, data) {
 }
 
 async function getJson(path) {
-  const token = localStorage.getItem('token'); // Retrieve the token
+  const token = localStorage.getItem('token');
   const response = await fetch(`${BASE_URL}${path}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`, // Include the token
+      Authorization: `Bearer ${token}`,
     },
   });
   const json = await response.json();
@@ -76,14 +76,12 @@ async function deleteReq(path) {
 }
 
 export async function login(username, password) {
-  // append账号密码
   const form = new URLSearchParams();
   form.append('username', username);
   form.append('password', password);
 
   let response;
   try {
-    // fetch后端
     response = await fetch(`${BASE_URL}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -93,14 +91,12 @@ export async function login(username, password) {
     throw new Error(`Network error during login: ${networkError.message}`);
   }
 
-  // 如果不是json就报错
   const contentType = response.headers.get('content-type') || '';
   if (!contentType.includes('application/json')) {
     const text = await response.text();
     throw new Error(`Unexpected non-JSON response: ${text.slice(0, 100)}`);
   }
 
-  // 解析内容
   let body;
   try {
     body = await response.json();
@@ -108,7 +104,6 @@ export async function login(username, password) {
     throw new Error('Failed to parse JSON response');
   }
 
-  // 登录成功，存入token
   const token = body.access_token || body.token;
   if (token) {
     localStorage.setItem('token', token);
@@ -117,7 +112,6 @@ export async function login(username, password) {
     localStorage.setItem('role', decodeToken.role);
   }
 
-  // return 内容
   return body;
 }
 
@@ -211,12 +205,12 @@ export async function addRental(rentalData) {
     const data = await response.json();
     
     if (!response.ok) {
-      throw new Error(`${response.status}: ${data.detail || '创建租借记录失败'}`);
+      throw new Error(`${response.status}: ${data.detail || 'Failed to create rental record'}`);
     }
 
     return data;
   } catch (error) {
-    console.error('创建租借记录错误:', error);
+    console.error('Failed to create rental record:', error);
     throw error;
   }
 }
@@ -226,7 +220,7 @@ export const getRentalById = async (rentalId) => {
 
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(error.detail || '获取租借记录失败');
+    throw new Error(error.detail || 'Failed to fetch rental record');
   }
 
   return response.json();
@@ -236,7 +230,7 @@ export const returnRental = async (rentalId) => {
   try {
     const actualReturnDate = new Date().toISOString();
     
-    console.log('归还图书数据:', {
+    console.log('Return book data:', {
       rentalId,
       actualReturnDate
     });
@@ -251,20 +245,20 @@ export const returnRental = async (rentalId) => {
       })
     });
 
-    console.log('服务器响应状态:', response.status);
-    console.log('服务器响应头:', Object.fromEntries(response.headers.entries()));
+    console.log('Server response status:', response.status);
+    console.log('Server response headers:', Object.fromEntries(response.headers.entries()));
 
     const data = await response.json();
-    console.log('服务器返回的数据:', data);
+    console.log('Server returned data:', data);
 
     if (!response.ok) {
-      throw new Error(data.detail || '归还图书失败');
+      throw new Error(data.detail || 'Failed to return book');
     }
 
     return data;
   } catch (error) {
-    console.error('归还图书错误:', error);
-    throw new Error(error.message || '归还图书失败');
+    console.error('Failed to return book:', error);
+    throw new Error(error.message || 'Failed to return book');
   }
 };
 
@@ -273,13 +267,13 @@ export const getRentalsByCustomer = async (customerId) => {
 
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(error.detail || '获取顾客租借记录失败');
+    throw new Error(error.detail || 'Failed to fetch customer rental records');
   }
 
   return response.json();
 };
 
-// 创建axios实例用于新的API
+// Create axios instance for new API
 const api = axios.create({
   baseURL: BASE_URL,
   headers: {
@@ -287,7 +281,7 @@ const api = axios.create({
   },
 });
 
-// 添加请求拦截器，在每个请求中添加token
+// Add request interceptor to include token in each request
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -301,19 +295,19 @@ api.interceptors.request.use(
   }
 );
 
-// 展览相关API
+// Exhibition related API
 export const getExhibitions = () => api.get('/exhibitions');
 export const getExhibition = (id) => api.get(`/exhibitions/${id}`);
 export const registerExhibition = (eventId, data) => 
   api.post(`/exhibitions/${eventId}/registrations`, data);
 
-// 研讨会相关API
+// Seminar related API
 export const getSeminars = () => api.get('/seminars');
 export const getSeminar = (id) => api.get(`/seminars/${id}`);
 export const createInvitation = (eventId, data) => 
   api.post(`/seminars/${eventId}/invitations`, data);
 
-// 获取用户报名的活动
+// Get user registered events
 export const getMyRegistrations = (eventId) => 
   api.get(`/exhibitions/${eventId}/registrations`);
 export const getMyInvitations = (eventId) => 
@@ -327,7 +321,7 @@ export function deleteEvent(eventId) {
   return deleteReq(`/event/${eventId}`);
 }
 
-// 获取未支付账单
+// Get unpaid invoices
 export async function getUnpaidInvoices() {
   const token = localStorage.getItem('token');
   const res = await fetch('http://127.0.0.1:8000/invoices/unpaid', {
@@ -337,7 +331,7 @@ export async function getUnpaidInvoices() {
   return await res.json();
 }
 
-// 支付账单
+// Pay invoice
 export async function payInvoice(invoiceId, data) {
   const token = localStorage.getItem('token');
   const res = await fetch(`http://127.0.0.1:8000/invoices/pay/${invoiceId}`, {
@@ -364,7 +358,7 @@ export function deleteBookCopy(bookId, copyId) {
   });
 }
 
-// 新建预约
+// Create new reservation
 export function createRoomReservation(data) {
   return fetch('http://127.0.0.1:8000/room-reservation/', {
     method: 'POST',
@@ -372,23 +366,25 @@ export function createRoomReservation(data) {
     body: JSON.stringify(data)
   }).then(res => res.json());
 }
-// 获取特定房间的预约
+
+// Get reservations for a specific room
 export function getRoomReservations(roomId) {
   return fetch(`http://127.0.0.1:8000/room-reservation/room/${roomId}`)
     .then(res => {
       if (!res.ok) {
-        throw new Error('获取房间预约信息失败');
+        throw new Error('Failed to fetch room reservation information');
       }
       return res.json();
     });
 }
-// 获取单个预约
+
+// Get a single reservation
 export function getRoomReservationById(reservationId) {
   return fetch(`http://127.0.0.1:8000/room-reservation/${reservationId}`)
     .then(res => res.json());
 }
 
-// 更新预约
+// Update reservation
 export function updateRoomReservation(reservationId, data) {
   return fetch(`http://127.0.0.1:8000/room-reservation/${reservationId}`, {
     method: 'PUT',
@@ -397,25 +393,26 @@ export function updateRoomReservation(reservationId, data) {
   }).then(res => res.json());
 }
 
-// 删除预约
+// Delete reservation
 export function deleteRoomReservation(reservationId) {
   return fetch(`http://127.0.0.1:8000/room-reservation/${reservationId}`, {
     method: 'DELETE'
   });
 }
 
+// Get all rooms
 export function getAllRooms() {
   return fetch('http://127.0.0.1:8000/room/')
     .then(res => res.json());
 }
 
-// 获取单个自习室
+// Get a single study room
 export function getRoomById(roomId) {
   return fetch(`http://127.0.0.1:8000/room/${roomId}`)
     .then(res => res.json());
 }
 
-// 新建自习室
+// Create new study room
 export function createRoom(capacity) {
   return fetch('http://127.0.0.1:8000/room/', {
     method: 'POST',
@@ -424,7 +421,7 @@ export function createRoom(capacity) {
   }).then(res => res.json());
 }
 
-// 更新自习室
+// Update study room
 export function updateRoom(roomId, capacity) {
   return fetch(`http://127.0.0.1:8000/room/${roomId}`, {
     method: 'PUT',
@@ -433,14 +430,12 @@ export function updateRoom(roomId, capacity) {
   }).then(res => res.json());
 }
 
-// 删除自习室
+// Delete study room
 export function deleteRoom(roomId) {
   return fetch(`http://127.0.0.1:8000/room/${roomId}`, {
     method: 'DELETE'
   });
 }
-
-
 
 export default api;
 

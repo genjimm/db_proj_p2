@@ -26,7 +26,7 @@ import RoomReservationPage from './pages/RoomReservationPage';
 
 function Main() {
   const { pathname } = useLocation();
-  // 定义哪些路由下不显示 NavBar
+  // Define which routes should not display NavBar
   const noNav = ['/', '/login', '/register'];
   const hideNav = noNav.includes(pathname);
   return (

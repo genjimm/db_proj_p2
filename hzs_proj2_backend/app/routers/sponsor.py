@@ -16,7 +16,7 @@ def create_organization(
     data: schemas.OrganizationCreate,
     db = Depends(get_db)
 ):
-    # 1) 插主表，只存 sponsor_type
+
     db.execute(
         "INSERT INTO hzs_sponsor (sponsor_type) VALUES ('O') RETURNING sponsor_id, sponsor_type, created_at"
     )
@@ -25,14 +25,14 @@ def create_organization(
         raise HTTPException(500, "创建 Sponsor 失败")
     sid = row["sponsor_id"]
 
-    # 2) 插机构子表
+
     db.execute(
         "INSERT INTO hzs_organization (sponsor_id, org_name) VALUES (%s, %s)",
         (sid, data.org_name)
     )
     db.connection.commit()
 
-    # 3) 构造返回
+
     return {
         **row,
         "org_name": data.org_name,

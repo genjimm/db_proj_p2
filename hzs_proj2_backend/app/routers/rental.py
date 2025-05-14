@@ -136,17 +136,15 @@ async def return_rental(
         if not rental:
             raise HTTPException(status_code=404, detail="Rental not found")
 
-        # 1. 取字段
         actual = rental_return.actual_return_date
         expected = rental["expected_return_date"]
 
-        # 2. 统一成 naive（或都转 UTC-aware，看你业务需求）
+
         if actual.tzinfo is not None:
             actual = actual.replace(tzinfo=None)
         if expected.tzinfo is not None:
             expected = expected.replace(tzinfo=None)
 
-        # 3. 比较
         is_late = actual > expected
         if is_late:
             db.execute(UPDATE_LATE_RENTAL_RETURN_DATE_QUERY, (actual, rental_id))
@@ -157,7 +155,6 @@ async def return_rental(
         if not updated:
             raise HTTPException(status_code=404, detail="Rental not found")
 
-        # 4. 标记可借
         db.execute(UPDATE_BOOK_COPY_STATUS_QUERY, ("AVAILABLE", updated["copy_id"]))
         db.connection.commit()
         return updated

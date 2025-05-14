@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 export default function InputAction({ 
-  label,           // 字段标签，如 "Book ID"
-  placeholder,     // 占位符，如 "Enter book ID"
-  buttonText,      // 按钮文字
-  onSubmit,        // 回调 value => …
+  label,        
+  placeholder, 
+  buttonText,  
+  onSubmit,    
 }) {
   const [value, setValue] = useState('');
   return (

@@ -19,7 +19,7 @@ def create_exhibition(
     exh: schemas.ExhibitionCreate,
     db = Depends(get_db)
 ):
-    # 1) 插入基表
+
     insert_event_sql = """
         INSERT INTO hzs_event
           (e_name, topic, start_datetime, stop_datetime, event_type)
@@ -36,7 +36,7 @@ def create_exhibition(
     if not new_event:
         raise HTTPException(500, "Failed to create base event")
 
-    # 2) 插入子表
+
     insert_exh_sql = """
         INSERT INTO hzs_exhibition (event_id, expense)
         VALUES (%s, %s)
@@ -45,10 +45,9 @@ def create_exhibition(
         new_event["event_id"],
         exh.expense
     ))
-    # 一次性提交
+
     db.connection.commit()
 
-    # 3) 返回给客户端
     return {
         "event_id":       new_event["event_id"],
         "e_name":         new_event["e_name"],

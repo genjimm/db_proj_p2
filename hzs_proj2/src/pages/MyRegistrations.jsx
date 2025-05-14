@@ -12,11 +12,9 @@ const MyRegistrations = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 获取所有展览
         const exhibitionsResponse = await getExhibitions();
         setExhibitions(exhibitionsResponse.data);
 
-        // 获取每个展览的报名信息
         const registrationsData = {};
         for (const exhibition of exhibitionsResponse.data) {
           try {

@@ -17,9 +17,9 @@ router = APIRouter(
 )
 def create_seminar(
     sem: schemas.SeminarCreate,
-    db  = Depends(get_db)  # db 是 psycopg2 cursor
+    db  = Depends(get_db) 
 ):
-    # 1) 基表插入
+
     sql_event = """
       INSERT INTO HZS_EVENT
         (e_name, topic, start_datetime, stop_datetime, event_type)
@@ -35,14 +35,13 @@ def create_seminar(
     if not new_event:
         raise HTTPException(500, "Failed to create base event")
 
-    # 2) 子表插入
     sql_sem = """
       INSERT INTO HZS_SEMINAR (event_id, descrip)
       VALUES (%s, %s)
     """
     db.execute(sql_sem, (new_event["event_id"], sem.descrip))
 
-    # 3) 提交并返回
+
     db.connection.commit()
     return {
         "event_id":       new_event["event_id"],
@@ -116,13 +115,13 @@ async def delete_seminar(event_id: int, db=Depends(get_db), current_user=Depends
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not authorized to perform this action"
         )
-    # 先删 sponsor 关系
+
     db.execute("DELETE FROM hzs_seminar_sponsor WHERE event_id = %s", (event_id,))
-    # 再删 access
+
     db.execute("DELETE FROM hzs_seminar_access WHERE event_id = %s", (event_id,))
-    # 再删 seminar
+
     db.execute("DELETE FROM hzs_seminar WHERE event_id = %s", (event_id,))
-    # 最后删 event
+
     db.execute("DELETE FROM hzs_event WHERE event_id = %s", (event_id,))
     db.connection.commit()
     return None

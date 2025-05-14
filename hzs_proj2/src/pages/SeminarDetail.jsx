@@ -39,7 +39,7 @@ const SeminarDetail = () => {
           setAlreadyInvited(true);
         }
       } catch (err) {
-        // 忽略错误
+        // ignore the error
       }
     };
     checkAlreadyInvited();
@@ -60,7 +60,7 @@ const SeminarDetail = () => {
         ...formData,
         invited_at: new Date().toISOString()
       });
-      localStorage.setItem('userEmail', formData.invitee_email); // 申请成功后存邮箱
+      localStorage.setItem('userEmail', formData.invitee_email); // store the email
       setInvitationSuccess(true);
       setTimeout(() => {
         navigate('/my-invitations');

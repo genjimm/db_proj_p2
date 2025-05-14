@@ -11,13 +11,13 @@ function RentalAddForm({ onSubmit }) {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
 
-  // 设置默认时间为当前时间
+  // Set default time to current time
   useEffect(() => {
     const now = new Date();
     const tomorrow = new Date(now);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    // 格式化日期时间字符串为 YYYY-MM-DDThh:mm
+    // Format date time string to YYYY-MM-DDThh:mm
     const formatDateTime = (date) => {
       return date.toISOString().slice(0, 16);
     };
@@ -47,24 +47,24 @@ function RentalAddForm({ onSubmit }) {
     }
 
     try {
-      // 将本地时间转换为 UTC 时间
+      // Convert local time to UTC time
       const borrowDate = new Date(borrow_date);
       const expectedReturnDate = new Date(expected_return_date);
 
-      // 检查日期是否有效
+      // Check if date is valid
       if (isNaN(borrowDate.getTime()) || isNaN(expectedReturnDate.getTime())) {
         setError('Invalid date format');
         return;
       }
 
-      // 检查预期归还日期是否至少比借阅日期晚一天
+      // Check if expected return date is at least one day after rental date
       const oneDayInMs = 24 * 60 * 60 * 1000;
       if (expectedReturnDate.getTime() - borrowDate.getTime() < oneDayInMs) {
         setError('Expected return date must be at least one day after borrow date');
         return;
       }
 
-      // 转换为 ISO 格式，确保与 curl 命令格式一致
+      // Convert to ISO format to ensure consistency with curl command format
       const rentalData = {
         customer_id: parseInt(customer_id),
         copy_id: parseInt(copy_id),
@@ -72,13 +72,13 @@ function RentalAddForm({ onSubmit }) {
         expected_return_date: expectedReturnDate.toISOString()
       };
 
-      console.log('发送到后端的数据:', rentalData);
+      console.log('Data sent to backend:', rentalData);
 
       const newRental = await addRental(rentalData);
       if (newRental && newRental.rental_id) {
         setMessage(`Rental ${newRental.rental_id} created successfully.`);
         onSubmit(newRental);
-        // 清空表单
+        // Clear form
         setFormData({
           customer_id: '',
           copy_id: '',

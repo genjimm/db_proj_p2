@@ -11,7 +11,7 @@ def add_seminar_sponsor(
     data: schemas.SeminarSponsorCreate,
     db = Depends(get_db)
 ):
-    # 可先检查 seminar 与 sponsor 是否都存在
+
     sql = """
       INSERT INTO hzs_seminar_sponsor (event_id, sponsor_id, amount)
       VALUES (%s, %s, %s)
