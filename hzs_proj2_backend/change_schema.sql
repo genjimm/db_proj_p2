@@ -136,3 +136,6 @@ ALTER TABLE hzs_seminar_access
 
 ALTER TABLE hzs_customer
 ADD COLUMN role VARCHAR(20) NOT NULL DEFAULT 'user';
+
+CREATE SEQUENCE hzs_payment_id_seq START WITH 1 INCREMENT BY 1;
+ALTER TABLE hzs_payment ALTER COLUMN payment_id SET DEFAULT nextval('hzs_payment_id_seq');
