@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from app import schemas
 from app.database import get_db
 from typing import List
+from app.oauth2 import get_current_user
 
 router = APIRouter(
     prefix="/exhibitions",
@@ -119,3 +120,24 @@ def get_exhibition(event_id: int, db = Depends(get_db)):
         "event_type":     row["event_type"],
         "expense":        row["expense"]
     }
+
+@router.delete("/{event_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_exhibition(event_id: int, db=Depends(get_db), current_user=Depends(get_current_user)):
+    # Check if user is admin
+    if current_user["role"] != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to perform this action"
+        )
+    
+    # First delete related records in hzs_exhibition_access
+    db.execute("DELETE FROM hzs_exhibition_access WHERE event_id = %s", (event_id,))
+    
+    # Then delete from hzs_exhibition
+    db.execute("DELETE FROM hzs_exhibition WHERE event_id = %s", (event_id,))
+    
+    # Finally delete from main event table
+    db.execute("DELETE FROM hzs_event WHERE event_id = %s", (event_id,))
+    
+    db.connection.commit()
+    return None

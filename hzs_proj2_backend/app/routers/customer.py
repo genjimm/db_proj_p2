@@ -8,9 +8,9 @@ router = APIRouter(
 )
 
 CREATE_CUSTOMER_QUERY = """
-    INSERT INTO hzs_customer (l_name, f_name, phone, email, id_type, id_num, password)
-    VALUES (%s, %s, %s, %s, %s, %s, %s)
-    RETURNING customer_id, l_name, f_name, phone, email, id_type, id_num
+    INSERT INTO hzs_customer (l_name, f_name, phone, email, id_type, id_num, password, role)
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+    RETURNING customer_id, l_name, f_name, phone, email, id_type, id_num, role
 """
 
 @router.get('/')
@@ -26,7 +26,7 @@ async def create_customer(customer: schemas.CustomerCreate, db=Depends(get_db)):
     # Insert the new customer into the database
     db.execute(
         CREATE_CUSTOMER_QUERY,
-        (customer.l_name, customer.f_name, customer.phone, customer.email, customer.id_type, customer.id_num, customer.password)
+        (customer.l_name, customer.f_name, customer.phone, customer.email, customer.id_type, customer.id_num, customer.password, customer.role)
     )
     new_customer = db.fetchone()
     db.connection.commit()

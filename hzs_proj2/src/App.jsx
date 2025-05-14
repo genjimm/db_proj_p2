@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -7,6 +7,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import HomePage from './pages/HomePage';
 import ProtectRoute from './components/ProtectRoute';
+import RoleBasedRoute from './components/RoleBasedRoute';
 import NavBar from './components/NavBar';
 import BookPage from './pages/BookPage';
 import AuthorPage from './pages/AuthorPage';
@@ -17,6 +18,9 @@ import Seminars from './pages/Seminars';
 import SeminarDetail from './pages/SeminarDetail';
 import MyRegistrations from './pages/MyRegistrations';
 import MyInvitations from './pages/MyInvitations';
+import AdminPanel from './pages/AdminPanel';
+import MyInvoice from './pages/MyInvoice';
+import StudyRoomPage from './pages/StudyRoomPage';
 
 function Main() {
   const { pathname } = useLocation();
@@ -52,18 +56,18 @@ function Main() {
         <Route
           path="/authors"
           element={
-            <ProtectRoute>
+            <RoleBasedRoute allowedRoles={['admin']}>
               <AuthorPage />
-            </ProtectRoute>
+            </RoleBasedRoute>
           }
         />
         
         <Route
           path="/rentals"
           element={
-            <ProtectRoute>
+            <RoleBasedRoute allowedRoles={['admin']}>
               <RentalPage />
-            </ProtectRoute>
+            </RoleBasedRoute>
           }
         />
         
@@ -117,6 +121,33 @@ function Main() {
           element={
             <ProtectRoute>
               <MyInvitations />
+            </ProtectRoute>
+          }
+        />
+        
+        <Route
+          path="/admin"
+          element={
+            <ProtectRoute>
+              <AdminPanel />
+            </ProtectRoute>
+          }
+        />
+        
+        <Route
+          path="/myinvoice"
+          element={
+            <ProtectRoute>
+              <MyInvoice />
+            </ProtectRoute>
+          }
+        />
+        
+        <Route
+          path="/study-room"
+          element={
+            <ProtectRoute>
+              <StudyRoomPage />
             </ProtectRoute>
           }
         />

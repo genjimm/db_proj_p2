@@ -1,11 +1,17 @@
 import axios from 'axios';
+import { jwtDecode } from "jwt-decode";
 
 const BASE_URL = 'http://127.0.0.1:8000';
 
 async function postJson(path, data) {
+  const token = localStorage.getItem('token'); // Retrieve the token
+  console.log('Token:', token);
   const response = await fetch(`${BASE_URL}${path}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`, // Include the token
+    },
     body: JSON.stringify(data),
   });
   const json = await response.json();
@@ -17,9 +23,13 @@ async function postJson(path, data) {
 }
 
 async function getJson(path) {
+  const token = localStorage.getItem('token'); // Retrieve the token
   const response = await fetch(`${BASE_URL}${path}`, {
     method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`, // Include the token
+    },
   });
   const json = await response.json();
   if (!response.ok) {
@@ -44,8 +54,13 @@ async function putJson(path, data) {
 }
 
 async function deleteReq(path) {
+  const token = localStorage.getItem('token');
   const response = await fetch(`${BASE_URL}${path}`, {
     method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
   });
   if (!response.ok) {
     let errMsg;
@@ -97,7 +112,11 @@ export async function login(username, password) {
   const token = body.access_token || body.token;
   if (token) {
     localStorage.setItem('token', token);
+    const decodeToken = jwtDecode(token);
+    console.log('Decoded Token:', decodeToken);
+    localStorage.setItem('role', decodeToken.role);
   }
+
   // return 内容
   return body;
 }
@@ -111,7 +130,18 @@ export function addBook(book) {
 }
 
 export function deleteBook(bookId) {
-  return deleteReq(`/book/${bookId}`);
+  return fetch(`${BASE_URL}/book/${bookId}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  }).then(response => {
+    if (!response.ok) {
+      return response.json().then(err => {
+        throw new Error(err.detail || 'Failed to delete book');
+      });
+    }
+  });
 }
 
 export function updateBook(bookId, bookData) {
@@ -148,6 +178,10 @@ export function getBookAuthors(bookId) {
 
 export function getBookById(bookId) {
   return getJson(`/book/${bookId}`);
+}
+
+export function getAllBooks() {
+  return getJson('/book/');
 }
 
 export function addAuthor(author) {
@@ -200,7 +234,6 @@ export const getRentalById = async (rentalId) => {
 
 export const returnRental = async (rentalId) => {
   try {
-    // 获取当前时间作为归还时间
     const actualReturnDate = new Date().toISOString();
     
     console.log('归还图书数据:', {
@@ -286,4 +319,101 @@ export const getMyRegistrations = (eventId) =>
 export const getMyInvitations = (eventId) => 
   api.get(`/seminars/${eventId}/invitations`);
 
+export function createEvent(eventData) {
+  return postJson('/event/', eventData);
+}
+
+export function deleteEvent(eventId) {
+  return deleteReq(`/event/${eventId}`);
+}
+
+// 获取未支付账单
+export async function getUnpaidInvoices() {
+  const token = localStorage.getItem('token');
+  const res = await fetch('http://127.0.0.1:8000/invoices/unpaid', {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return await res.json();
+}
+
+// 支付账单
+export async function payInvoice(invoiceId, data) {
+  const token = localStorage.getItem('token');
+  const res = await fetch(`http://127.0.0.1:8000/invoices/pay/${invoiceId}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify(data)
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return await res.json();
+}
+
+export function deleteBookCopy(bookId, copyId) {
+  return fetch(`${BASE_URL}/book/${bookId}/copy/${copyId}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  }).then(response => {
+    if (!response.ok) {
+      return response.json().then(err => {
+        throw new Error(err.detail || 'Failed to delete book copy');
+      });
+    }
+  });
+}
+
 export default api;
+
+// Study Room API functions
+export const getAllRooms = async () => {
+    try {
+        const response = await getJson('/study-room/');
+        return response;
+    } catch (error) {
+        console.error('Error fetching rooms:', error);
+        throw error;
+    }
+};
+
+export const getRoomById = async (roomId) => {
+    try {
+        const response = await getJson(`/study-room/${roomId}`);
+        return response;
+    } catch (error) {
+        console.error('Error fetching room:', error);
+        throw error;
+    }
+};
+
+export const getRoomReservations = async (roomId, date) => {
+    try {
+        const response = await getJson(`/study-room/${roomId}/reservations?date=${date}`);
+        return response;
+    } catch (error) {
+        console.error('Error fetching room reservations:', error);
+        throw error;
+    }
+};
+
+export const createReservation = async (reservationData) => {
+    try {
+        const response = await postJson('/study-room/reservation', reservationData);
+        return response;
+    } catch (error) {
+        console.error('Error creating reservation:', error);
+        throw error;
+    }
+};
+
+export const getMyReservations = async () => {
+    try {
+        const response = await getJson('/study-room/my-reservations');
+        console.log('Reservations response:', response);  // Add logging
+        return response;
+    } catch (error) {
+        console.error('Error fetching reservations:', error);
+        throw error;
+    }
+};

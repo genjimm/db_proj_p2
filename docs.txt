@@ -24,5 +24,13 @@ Dashboard Page:
 作者细节页面:
     - 点击查看作品 -> 跳转到显示该作者所有作品页面
 
-    
 
+// TODO bookcopy delete
+// 加入delte book by id 先删除所有copy 再删除所有书
+// TODO security prevent sql injection
+// 加入返回customer名字
+// 区分user和administrator type
+// 加入payment
+// 加invoce state
+// 加入书本getall
+// 管理员add room， user reservation
