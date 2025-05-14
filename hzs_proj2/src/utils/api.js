@@ -364,56 +364,85 @@ export function deleteBookCopy(bookId, copyId) {
   });
 }
 
+// 新建预约
+export function createRoomReservation(data) {
+  return fetch('http://127.0.0.1:8000/room-reservation/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).then(res => res.json());
+}
+// 获取特定房间的预约
+export function getRoomReservations(roomId) {
+  return fetch(`http://127.0.0.1:8000/room-reservation/room/${roomId}`)
+    .then(res => {
+      if (!res.ok) {
+        throw new Error('获取房间预约信息失败');
+      }
+      return res.json();
+    });
+}
+// 获取单个预约
+export function getRoomReservationById(reservationId) {
+  return fetch(`http://127.0.0.1:8000/room-reservation/${reservationId}`)
+    .then(res => res.json());
+}
+
+// 更新预约
+export function updateRoomReservation(reservationId, data) {
+  return fetch(`http://127.0.0.1:8000/room-reservation/${reservationId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).then(res => res.json());
+}
+
+// 删除预约
+export function deleteRoomReservation(reservationId) {
+  return fetch(`http://127.0.0.1:8000/room-reservation/${reservationId}`, {
+    method: 'DELETE'
+  });
+}
+
+export function getAllRooms() {
+  return fetch('http://127.0.0.1:8000/room/')
+    .then(res => res.json());
+}
+
+// 获取单个自习室
+export function getRoomById(roomId) {
+  return fetch(`http://127.0.0.1:8000/room/${roomId}`)
+    .then(res => res.json());
+}
+
+// 新建自习室
+export function createRoom(capacity) {
+  return fetch('http://127.0.0.1:8000/room/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ capacity })
+  }).then(res => res.json());
+}
+
+// 更新自习室
+export function updateRoom(roomId, capacity) {
+  return fetch(`http://127.0.0.1:8000/room/${roomId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ capacity })
+  }).then(res => res.json());
+}
+
+// 删除自习室
+export function deleteRoom(roomId) {
+  return fetch(`http://127.0.0.1:8000/room/${roomId}`, {
+    method: 'DELETE'
+  });
+}
+
+
+
 export default api;
 
-// Study Room API functions
-export const getAllRooms = async () => {
-    try {
-        const response = await getJson('/study-room/');
-        return response;
-    } catch (error) {
-        console.error('Error fetching rooms:', error);
-        throw error;
-    }
-};
 
-export const getRoomById = async (roomId) => {
-    try {
-        const response = await getJson(`/study-room/${roomId}`);
-        return response;
-    } catch (error) {
-        console.error('Error fetching room:', error);
-        throw error;
-    }
-};
 
-export const getRoomReservations = async (roomId, date) => {
-    try {
-        const response = await getJson(`/study-room/${roomId}/reservations?date=${date}`);
-        return response;
-    } catch (error) {
-        console.error('Error fetching room reservations:', error);
-        throw error;
-    }
-};
-
-export const createReservation = async (reservationData) => {
-    try {
-        const response = await postJson('/study-room/reservation', reservationData);
-        return response;
-    } catch (error) {
-        console.error('Error creating reservation:', error);
-        throw error;
-    }
-};
-
-export const getMyReservations = async () => {
-    try {
-        const response = await getJson('/study-room/my-reservations');
-        console.log('Reservations response:', response);  // Add logging
-        return response;
-    } catch (error) {
-        console.error('Error fetching reservations:', error);
-        throw error;
-    }
-};

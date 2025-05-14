@@ -19,6 +19,13 @@ ALTER TABLE hzs_customer ALTER COLUMN customer_id SET DEFAULT nextval('hzs_custo
 CREATE SEQUENCE hzs_author_id_seq START WITH 1 INCREMENT BY 1;
 ALTER TABLE hzs_author ALTER COLUMN author_id SET DEFAULT nextval('hzs_author_id_seq');
 
+CREATE SEQUENCE hzs_room_id_seq START WITH 1 INCREMENT BY 1;
+ALTER TABLE hzs_study_room ALTER COLUMN room_id SET DEFAULT nextval('hzs_room_id_seq');
+
+CREATE SEQUENCE hzs_reservation_id_seq START WITH 1 INCREMENT BY 1;
+ALTER TABLE hzs_room_reservation ALTER COLUMN reservation_id SET DEFAULT nextval('hzs_reservation_id_seq');
+
+
 -- event id
 CREATE SEQUENCE hzs_event_id_seq
   START WITH 1
