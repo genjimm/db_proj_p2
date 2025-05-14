@@ -26,7 +26,7 @@ GET_ALL_ROOMS_QUERY = """
 GET_ROOM_BY_ID_QUERY = """
     SELECT room_id, capacity
     FROM hzs_study_room
-    WHERE room_id = %s
+    WHERE room_id = %s FOR UPDATE
 """
 
 GET_ROOM_RESERVATIONS_QUERY = """
@@ -36,6 +36,7 @@ GET_ROOM_RESERVATIONS_QUERY = """
     FROM hzs_room_reservation r
     WHERE r.room_id = %s
     AND r.reserve_date = %s
+    FOR UPDATE
     ORDER BY r.start_time
 """
 

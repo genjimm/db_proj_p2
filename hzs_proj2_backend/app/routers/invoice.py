@@ -30,7 +30,7 @@ def pay_invoice(invoice_id: int, payment: schemas.PaymentCreate, db=Depends(get_
         SELECT i.invoice_id, i.invoic__amount, r.customer_id
         FROM hzs_invoice i
         JOIN hzs_rental r ON i.rental_id = r.rental_id
-        WHERE i.invoice_id = %s
+        WHERE i.invoice_id = %s FOR UPDATE
     '''
     db.execute(sql_check, (invoice_id,))
     inv = db.fetchone()
