@@ -27,6 +27,12 @@ GET_BOOK_BY_ID_QUERY = """
     WHERE book_id = %s
 """
 
+GET_ALL_BOOKS_QUERY = """
+    SELECT book_id, b_name, topic 
+    FROM hzs_book
+    ORDER BY book_id
+"""
+
 DELETE_BOOK_BY_ID_QUERY = """
     DELETE FROM hzs_book
     WHERE book_id = %s
@@ -64,6 +70,15 @@ GET_AUTHORS_BY_BOOK_QUERY = """
     WHERE ba.book_id = %s
 """
 
+DELETE_BOOK_COPY_QUERY = """
+    DELETE FROM hzs_book_copy
+    WHERE copy_id = %s
+"""
+
+DELETE_BOOK_QUERY = """
+    DELETE FROM hzs_book
+    WHERE book_id = %s
+"""
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.BookOut)
 async def add_book(book: schemas.BookCreate, db=Depends(database.get_db), current_user=Depends(get_current_user)):
@@ -89,6 +104,24 @@ async def add_book(book: schemas.BookCreate, db=Depends(database.get_db), curren
 
     # 嚙踝蕭嚙踝蕭嚙踝蕭嚙踝蕭芞嚙踝蕭嚙踝蕭嚙踝蕭嚙誕�?
     return added_book
+
+@router.get("/", response_model=List[schemas.BookOut])
+async def get_all_books(db=Depends(database.get_db), current_user=Depends(get_current_user)):
+    if current_user['role'] != 'admin':
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You do not have access to this resource"
+        )
+    try:
+        db.execute(GET_ALL_BOOKS_QUERY)
+        books = db.fetchall()
+        return books
+    except Exception as e:
+        logger.error(f"Error retrieving books: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An error occurred while retrieving books."
+        )
 
 @router.get("/{book_id}", response_model=schemas.BookOut)
 async def get_book_byid(book_id: int, db=Depends(database.get_db), current_user=Depends(get_current_user)):
@@ -243,3 +276,70 @@ async def get_authors_of_book(book_id: int, db=Depends(database.get_db)):
     db.execute(GET_AUTHORS_BY_BOOK_QUERY, (book_id,))
     authors = db.fetchall()
     return authors
+
+@router.delete("/{book_id}/copy/{copy_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_book_copy(
+    book_id: int,
+    copy_id: int,
+    db=Depends(database.get_db),
+    current_user=Depends(get_current_user)
+):
+    if current_user['role'] != 'admin':
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only admin can delete book copies"
+        )
+    
+    try:
+        # First verify the copy belongs to the book
+        db.execute("""
+            SELECT copy_id FROM hzs_book_copy 
+            WHERE copy_id = %s AND book_id = %s
+        """, (copy_id, book_id))
+        
+        if not db.fetchone():
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Book copy not found"
+            )
+        
+        # Delete the copy
+        db.execute(DELETE_BOOK_COPY_QUERY, (copy_id,))
+        db.connection.commit()
+        
+    except Exception as e:
+        db.connection.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        )
+
+@router.delete("/{book_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_book(
+    book_id: int,
+    db=Depends(database.get_db),
+    current_user=Depends(get_current_user)
+):
+    if current_user['role'] != 'admin':
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only admin can delete books"
+        )
+    
+    try:
+        # First delete all copies of the book
+        db.execute("""
+            DELETE FROM hzs_book_copy
+            WHERE book_id = %s
+        """, (book_id,))
+        
+        # Then delete the book
+        db.execute(DELETE_BOOK_QUERY, (book_id,))
+        db.connection.commit()
+        
+    except Exception as e:
+        db.connection.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        )

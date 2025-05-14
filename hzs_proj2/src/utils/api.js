@@ -130,7 +130,18 @@ export function addBook(book) {
 }
 
 export function deleteBook(bookId) {
-  return deleteReq(`/book/${bookId}`);
+  return fetch(`${BASE_URL}/book/${bookId}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  }).then(response => {
+    if (!response.ok) {
+      return response.json().then(err => {
+        throw new Error(err.detail || 'Failed to delete book');
+      });
+    }
+  });
 }
 
 export function updateBook(bookId, bookData) {
@@ -167,6 +178,10 @@ export function getBookAuthors(bookId) {
 
 export function getBookById(bookId) {
   return getJson(`/book/${bookId}`);
+}
+
+export function getAllBooks() {
+  return getJson('/book/');
 }
 
 export function addAuthor(author) {
@@ -219,7 +234,6 @@ export const getRentalById = async (rentalId) => {
 
 export const returnRental = async (rentalId) => {
   try {
-    // 获取当前时间作为归还时间
     const actualReturnDate = new Date().toISOString();
     
     console.log('归还图书数据:', {
@@ -335,4 +349,100 @@ export async function payInvoice(invoiceId, data) {
   return await res.json();
 }
 
+export function deleteBookCopy(bookId, copyId) {
+  return fetch(`${BASE_URL}/book/${bookId}/copy/${copyId}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  }).then(response => {
+    if (!response.ok) {
+      return response.json().then(err => {
+        throw new Error(err.detail || 'Failed to delete book copy');
+      });
+    }
+  });
+}
+
+// 新建预约
+export function createRoomReservation(data) {
+  return fetch('http://127.0.0.1:8000/room-reservation/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).then(res => res.json());
+}
+// 获取特定房间的预约
+export function getRoomReservations(roomId) {
+  return fetch(`http://127.0.0.1:8000/room-reservation/room/${roomId}`)
+    .then(res => {
+      if (!res.ok) {
+        throw new Error('获取房间预约信息失败');
+      }
+      return res.json();
+    });
+}
+// 获取单个预约
+export function getRoomReservationById(reservationId) {
+  return fetch(`http://127.0.0.1:8000/room-reservation/${reservationId}`)
+    .then(res => res.json());
+}
+
+// 更新预约
+export function updateRoomReservation(reservationId, data) {
+  return fetch(`http://127.0.0.1:8000/room-reservation/${reservationId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).then(res => res.json());
+}
+
+// 删除预约
+export function deleteRoomReservation(reservationId) {
+  return fetch(`http://127.0.0.1:8000/room-reservation/${reservationId}`, {
+    method: 'DELETE'
+  });
+}
+
+export function getAllRooms() {
+  return fetch('http://127.0.0.1:8000/room/')
+    .then(res => res.json());
+}
+
+// 获取单个自习室
+export function getRoomById(roomId) {
+  return fetch(`http://127.0.0.1:8000/room/${roomId}`)
+    .then(res => res.json());
+}
+
+// 新建自习室
+export function createRoom(capacity) {
+  return fetch('http://127.0.0.1:8000/room/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ capacity })
+  }).then(res => res.json());
+}
+
+// 更新自习室
+export function updateRoom(roomId, capacity) {
+  return fetch(`http://127.0.0.1:8000/room/${roomId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ capacity })
+  }).then(res => res.json());
+}
+
+// 删除自习室
+export function deleteRoom(roomId) {
+  return fetch(`http://127.0.0.1:8000/room/${roomId}`, {
+    method: 'DELETE'
+  });
+}
+
+
+
 export default api;
+
+
+

@@ -20,6 +20,9 @@ import MyRegistrations from './pages/MyRegistrations';
 import MyInvitations from './pages/MyInvitations';
 import AdminPanel from './pages/AdminPanel';
 import MyInvoice from './pages/MyInvoice';
+import RoomPage from './pages/RoomPage';
+import RoomReservationPage from './pages/RoomReservationPage';
+
 
 function Main() {
   const { pathname } = useLocation();
@@ -141,7 +144,25 @@ function Main() {
             </ProtectRoute>
           }
         />
-        
+
+
+        <Route
+          path="/rooms"
+          element={
+            <RoleBasedRoute allowedRoles={['admin']}>
+              <RoomPage />
+            </RoleBasedRoute>
+          }
+        />
+
+        <Route
+          path="/room-reservations"
+          element={
+            <ProtectRoute>
+              <RoomReservationPage />
+            </ProtectRoute>
+          }
+        />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </>

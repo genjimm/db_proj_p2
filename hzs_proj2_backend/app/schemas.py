@@ -222,3 +222,35 @@ class PaymentCreate(BaseModel):
     card_holder_l_name: str = Field(..., description="持卡人姓氏")
     card_holder_f_name: str = Field(..., description="持卡人名字")
 
+class StudyRoomBase(BaseModel):
+    capacity: int
+
+class StudyRoomCreate(StudyRoomBase):
+    pass
+
+class StudyRoomOut(StudyRoomBase):
+    room_id: int
+
+    class Config:
+        from_attributes = True
+
+class RoomReservationBase(BaseModel):
+    topic_description: str
+    reserve_date: datetime
+    start_time: datetime
+    end_time: datetime
+    group_size: int
+    l_name: str
+    f_name: str
+
+class RoomReservationCreate(RoomReservationBase):
+    room_id: int
+
+class RoomReservationOut(RoomReservationBase):
+    reservation_id: int
+    customer_id: int
+    room_id: int
+
+    class Config:
+        from_attributes = True
+
