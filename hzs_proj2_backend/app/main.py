@@ -44,6 +44,11 @@ app.include_router(event.router)
 
 app.include_router(invoice.router)
 
+app.include_router(room.router)
+
+app.include_router(room_reservation.router)
+
+
 @app.get('/')
 async def root():
     return {"message": "hello world!123"}

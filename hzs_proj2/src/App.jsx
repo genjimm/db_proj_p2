@@ -149,9 +149,9 @@ function Main() {
         <Route
           path="/rooms"
           element={
-            <RoleBasedRoute allowedRoles={['admin']}>
+            <ProtectRoute>
               <RoomPage />
-            </RoleBasedRoute>
+            </ProtectRoute>
           }
         />
 
