@@ -31,12 +31,19 @@ ALTER TABLE hzs_event
 CREATE SEQUENCE hzs_sponsor_id_seq START WITH 1 INCREMENT BY 1;
 ALTER TABLE hzs_sponsor ALTER COLUMN sponsor_id SET DEFAULT nextval('hzs_sponsor_id_seq');
 
-CREATE SEQUENCE hzs_event_id_seq
-  START WITH 1
-  INCREMENT BY 1;
-ALTER TABLE hzs_event
-  ALTER COLUMN event_id
-    SET DEFAULT nextval('hzs_event_id_seq');
+
+CREATE SEQUENCE hzs_room_id_seq START WITH 1 INCREMENT BY 1;
+ALTER TABLE hzs_study_room ALTER COLUMN room_id SET DEFAULT nextval('hzs_room_id_seq');
+
+CREATE SEQUENCE hzs_reservation_id_seq START WITH 1 INCREMENT BY 1;
+ALTER TABLE HZS_ROOM_RESERVATION ALTER COLUMN reservation_id SET DEFAULT nextval('hzs_reservation_id_seq');
+
+-- CREATE SEQUENCE hzs_event_id_seq
+--   START WITH 1
+--   INCREMENT BY 1;
+-- ALTER TABLE hzs_event
+--   ALTER COLUMN event_id
+--     SET DEFAULT nextval('hzs_event_id_seq');
     
 CREATE SEQUENCE hzs_exhibition_access_id_seq START WITH 1 INCREMENT BY 1;
 ALTER TABLE hzs_exhibition_access ALTER COLUMN registration_id SET DEFAULT nextval('hzs_exhibition_access_id_seq');
