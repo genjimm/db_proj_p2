@@ -1,6 +1,6 @@
 from typing import Optional
 from fastapi import FastAPI, Depends
-from .routers import customer, auth, book, rental, seminars, exhibitions, seminar_sponsor, seminar_access, sponsor, exhibition_access, author, event, invoice
+from .routers import customer, auth, book, rental, seminars, exhibitions, seminar_sponsor, seminar_access, sponsor, exhibition_access, author, event, invoice, study_room
 from .database import get_db  
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -43,6 +43,8 @@ app.include_router(author.router)
 app.include_router(event.router)
 
 app.include_router(invoice.router)
+
+app.include_router(study_room.router)
 
 @app.get('/')
 async def root():
